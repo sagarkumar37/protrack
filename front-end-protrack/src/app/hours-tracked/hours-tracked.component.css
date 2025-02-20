@@ -1,0 +1,28 @@
+.dashboard-main {width: 100%;margin-top: 25px;background: #fff;box-shadow: 1px 5px 24px 0 rgb(68 102 242 / 5%);border-radius: 3px;padding: 15px;border:1px solid #c6d2d9;}
+
+.hourtrac-tbm {}
+.user-tm {margin-top: 20px;}
+.user-tm .icon {display: inline-block;}
+.user-tm .icon img {width:40px; height:40px;background: #f2f6f8;border-radius:50%;border: 1px solid #c6d2d9;}
+.user-tm .head {font-weight: 600;margin-left: 5px;display: inline-block;}
+.user-tm .time {font-weight: 600;text-align:right;}
+.user-tm .prgmn {margin-top:25px;}
+.user-tm .prgmn .progress {height:10px;}
+.user-tm .wekday {margin-top:20px;}
+.user-tm .wekday span {float:right;font-weight:700;}
+.user-tm .weekprogress {margin-top:28px;}
+.user-tm .weekprogress .progress {height:7px;}
+
+.calend-time-dt1n {margin-top:15px;}
+.calend-time-dt1n label {margin-bottom:10px;margin-top:10px; font-size:14px;}
+.calend-time-dt1n .form-control {color:#6c7581; font-size:14px;}
+.calend-time-dt1n .form-select {color:#6c7581; font-size:14px;}
+.calend-time-dt1n .btn {width:100%;margin-top:0px;}
+
+.logs-table1n {margin-top:25px;}
+.logs-table1n table {width:100%; font-size:14px;}
+.logs-table1n table tr {}
+.logs-table1n table tr th {background: #23384e;color: #fff;padding:7px 10px;font-weight:500; border:1px solid #d9d9d9;}
+.logs-table1n table tr td {padding:5px 10px;border:1px solid #d9d9d9;}
+.logs-table1n table tr:nth-child(odd) {background: #E9E9E9;}
+.logs-table1n table tr:nth-child(even) {background: #fff;}

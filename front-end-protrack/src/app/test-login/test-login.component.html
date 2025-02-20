@@ -1,0 +1,33 @@
+
+<div class = "logoin-bg" >
+
+   <form #loginForm="ngForm" (ngSubmit)="login()">
+    <div class="login-page">
+      <div class="login">
+        <div class="logo">
+          <img src="assets/img/Protrack_login.jpeg">
+        </div>
+        <div class="welc-login">
+          <span>Hello,</span> Please Login to Your Account!
+        </div>
+        <div class="form">
+          <div class="form-group">
+            <label>User Name</label>
+            <input type="text" class="form-control" placeholder="Enter Your User Name" 
+                   name="employee_code" [(ngModel)]="employee_code" required>
+          </div>
+    
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" placeholder="********"
+                   name="password" [(ngModel)]="password" required>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-outline-primary" type="submit">Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  
+</div>

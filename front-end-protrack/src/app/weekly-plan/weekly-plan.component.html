@@ -1,0 +1,84 @@
+
+
+<div class="table-responsive">
+  <mat-card class="fixed-height-card2">
+  <mat-card-header>
+    <mat-card-title>Insert Weekly Plan</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="table-container">
+
+    </div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>S No.</th>
+          <th>Activity</th>
+          <th>Task Description</th>
+          <th>Status</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let input of inputs; let i = index">
+          <td>
+            <div class="form-control" style="width:max-content">{{i+1}}</div>
+          </td>
+          <td >
+
+            <form [formGroup]="stateForm">
+    
+              <input type="text" class="form-control1 plain-input" placeholder="Please Search and Select Activity"
+              formControlName="stateGroup"
+                     required
+                     [matAutocomplete]="autoGroup">
+                     <!-- [(ngModel)]="inputs[i].activity"
+                     (ngModelChange)="onInputChange(i, 'activity', $event)"
+                     (input)="onActivitySearch(i, $event)"> -->
+                     
+              <mat-autocomplete #autoGroup="matAutocomplete" (optionSelected)="onOptionSelected(i, $event)">  
+                <mat-optgroup *ngFor="let group of stateGroupOptions | async" [label]="group.letter">
+                  <mat-option *ngFor="let name of group.names" [value]="name">{{ name }}</mat-option>
+                </mat-optgroup>
+              </mat-autocomplete>  
+            </form>
+            
+          </td>
+          <td>
+          
+            <input class = "form-control" placeholder="Enter Activity Description" [(ngModel)]="inputs[i].description"  (ngModelChange)="onInputChange(i, 'description', $event)" required>
+            
+          </td>
+          <td>
+            <select class="form-control" [(ngModel)]="input.status" required>
+              <option value="Incomplete">Planned</option>
+            </select>
+          </td>
+          <td>
+            <div >
+              <td class="button-container" style="text-align: center;">
+              <button class="btn btn-primary" (click)="addInput()" [disabled]="inputs.length === 10 || !isValidInput()">+
+                
+              
+              </button>
+              
+              <button type="reset" *ngIf="inputs.length > 1" (click)="deleteInput(i)" class="btn btn-outline-secondary">-
+               
+              </button>
+                </td>
+            </div>
+                </td>
+            
+          
+        </tr>
+      </tbody>
+      
+    </table>
+    <button mat-button class="save" (click)="savePlanTasks()">Save</button>
+  </mat-card-content>
+<mat-card-actions>
+  <!--<button mat-button class="save" (click)="savePlanTasks()">Save</button>-->
+</mat-card-actions>
+</mat-card>
+</div>
+

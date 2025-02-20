@@ -1,0 +1,159 @@
+  <div class="app">
+      <div class="sidemenu-area">
+      <div class="app-menu">
+      <div class="logo"><img src="assets/img/logo.png" height="75px" width="220px"></div>
+      <div class="left-menu">
+      <nav class='animated bounceInDown'>
+          <ul>
+              <li><a (click)="selectView('dashboard')" ><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg> Dashboard</a></li>
+              <li><a (click)="selectView('attendance')" ><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clipboard"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> Attendance</a></li>
+              <li><a (click)="selectView('timesheet')" ><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Timesheet</a></li>
+
+              <li class='sub-menu'>
+                <a (click)="toggleSubMenu1()">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-pie-chart">
+                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                    <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                  </svg>Reports
+                  <div class='fa fa-angle-down right'></div>
+                </a>
+             
+                <ul [ngClass]="{'shown': isShown1, 'sub-menu-items': true}">
+                  <li><a (click)="selectView('create_weekly_report')">Create Weekly Report</a></li>
+                  <li><a (click)="selectView('view_weekly_report')">View Weekly Report</a></li>
+                  <li *ngIf="admin_report"><a (click)="adminReport()">Admin Report</a></li>
+                  <li><a>Attendance Details</a></li>
+                  <li><a>Hours Tracked</a></li>
+                  
+                  <li><a (click)="selectView('employee_logs')">Employee Logs</a></li>
+              </ul>
+              </li>
+    
+
+              <li class='sub-menu'>
+          
+                <a (click)="toggleSubMenu()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  Projects<div class='fa fa-angle-down right'></div></a>
+                <ul [ngClass]="{'shown': isShown, 'sub-menu-items': true}">
+                    <li><a >Project List</a></li>
+                 
+                    <li><a>Task Progress</a></li>
+                   
+                </ul>
+                
+            </li>
+              
+          
+              <li><a><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Team</a></li>
+          </ul>
+      </nav>
+      </div>
+      
+      </div>
+      </div>
+      
+      <div class="main-content">
+      <div class="top-header">
+      <div class="row">
+      <div class="col-md-5">
+
+        <div class="workspace-top">
+
+          <div >
+            <strong>
+              {{this.firstName}} {{this.middleName}} {{this.lastName}}
+            </strong>
+          
+
+          </div>
+         
+          </div>
+
+      </div>
+      <div class="col-md-7">
+      <div class="top-hd-right">
+      
+      
+      
+      <div class="user-hd-top">
+
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <div class="user-photo">{{this.firstName[0]}}{{this.lastName[0]}}</div>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end user">
+          <br>
+          
+          <li>&nbsp;&nbsp;{{this.firstName}} {{this.middleName}} {{this.lastName}}</li>
+
+          <li><span>Employee Code: {{this.empCode}}</span></li>
+          <li><button class="dropdown-item" type="button" (click)="logout()">Log Out</button></li>
+        </ul>
+      </div>
+      </div>
+      
+      </div>
+      </div>
+      
+      </div>
+      </div>
+    
+      
+      <div class="dashboard-main">
+
+        <div *ngIf="selectedView === 'dashboard'">
+          <app-dashb></app-dashb>
+        </div>
+        
+        <div *ngIf="selectedView === 'attendance'">
+          <app-attend></app-attend>
+        </div>
+        
+        <div *ngIf="selectedView === 'timesheet'">
+          <!-- <div *ngIf="this.flagTimesheet()"> -->
+          <app-logout></app-logout>
+        <!-- </div> -->
+        </div>
+
+
+        <div *ngIf="selectedView === 'attendance_report'">
+          
+        
+        </div>
+         
+        <!-- <div *ngIf="selectedView === 'hours_tracked'">
+          <app-hours-tracked>
+            </app-hours-tracked>
+        </div> -->
+
+
+        <div *ngIf="selectedView === 'view_weekly_report'">
+          <!-- <div>Week Report</div> -->
+          <app-week-report></app-week-report>
+        </div>
+        <div *ngIf="selectedView  === 'create_weekly_report'">
+           <app-weekly-report></app-weekly-report>
+   
+        </div>
+
+        <div *ngIf="selectedView === 'task_progress'">
+            <app-task-progress>
+
+            </app-task-progress>
+        </div>
+
+        <div *ngIf="selectedView === 'employee_logs'">
+          <app-employee-logs>
+
+          </app-employee-logs>
+        </div>
+      
+      
+    </div>
+      </div>
+  
+      
+      
+      
+      </div>

@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+/* @import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'); */
+
+html, body { height: 100%; }
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  /* font-family: Arial, "Helvetica Neue", sans-serif; */
+  background-color: #f3f3f3c4;}
+.toast-error {
+  background-color: #0d6efd;
+  color: #ffffff;
+}
+
+
+/* body, html {
+    margin: 0;
+    padding: 0;
+  }
+   */
+
+/* <link href = "https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> */
+

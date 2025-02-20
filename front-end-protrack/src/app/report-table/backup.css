@@ -1,0 +1,355 @@
+.logs-table1n {
+    margin-top: 25px;
+  }
+  
+  .table-cell.date {
+    width: 80px;
+  }
+  
+  
+  .mat-table {
+    font-size: 12px;
+    width: 100%;
+    
+  }
+  .logs-table1n .mat-table {
+    font-size: 12px !important;
+  }
+  
+  .mat-column-date {
+    max-width: 100px; /* adjust the width as per your requirement */
+  }
+  .mat-column-startTime {
+    max-width: 100px; /* adjust the width as per your requirement */
+  }
+  .mat-column-endTime {
+    max-width: 100px; /* adjust the width as per your requirement */
+  }
+  
+  .mat-column-productiveTime {
+    max-width: 100px; /* adjust the width as per your requirement */
+  }
+  
+  .mat-column-nonProductiveTime {
+    max-width: 150px; /* adjust the width as per your requirement */
+  }
+  
+  .mat-column-productivePercentage{
+    max-width: 80px; /* adjust the width as per your requirement */
+  }
+  
+  .mat-column-idleTime {
+    max-width: 100px; /* adjust the width as per your requirement */
+  }
+  .mat-column-totalTime {
+    max-width: 140px; /* adjust the width as per your requirement */
+  }
+  .mat-column-holiday {
+    max-width: 100px; /* adjust the width as per your requirement */
+  }
+  
+  .mat-header-cell {
+    background: #23384e;
+    color: #fff;
+    padding: 7px 10px;
+    /* font-weight: 500; */
+    font-size: 9px;
+    border: 1px solid #d9d9d9;
+    width: 150%;
+    
+  }
+  
+  .mat-cell {
+    padding: 5px 10px;
+    border: 1px solid #d9d9d9;
+    font-size: 12px;
+  }
+  
+  .mat-row:nth-child(odd) {
+    background: #E9E9E9;
+  }
+  
+  .mat-row:nth-child(even) {
+    background: #fff;
+  }
+  
+  /* .red-row {
+    background-color: red;
+  } */
+  
+  :host ::ng-deep .mat-row.red-row {
+    background-color: rgb(244, 147, 147);
+  }
+  
+  :host ::ng-deep .mat-row.blue-row{
+    background-color: rgb(173, 173, 255);
+  }
+  
+  :host ::ng-deep .mat-row.yellow-row{
+    background-color: rgb(234, 234, 202);
+  }
+  
+  
+  
+  
+  
+  
+  
+  @media screen and (max-width: 767px) {
+    .mat-header-cell {
+      font-size: 8px;
+      width: auto;
+      white-space: nowrap;
+    }
+    
+    .mat-cell {
+      font-size: 10px;
+      padding: 3px 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .mat-column-date,
+    .mat-column-startTime,
+    .mat-column-endTime,
+    .mat-column-productiveTime,
+    .mat-column-nonProductiveTime,
+    .mat-column-productivePercentage,
+    .mat-column-idleTime,
+    .mat-column-totalTime,
+    .mat-column-holiday {
+      max-width: none;
+    }
+    
+    .mat-header-row {
+      display: none;
+    }
+  }
+
+/* 
+  backup css 2 */
+
+  .mat-column-nonProductiveTime {
+    width: 10%;
+  }
+  
+  .logs-table1n {
+    margin-top: 25px;
+    }
+    
+    .table-cell.date {
+    width: 80px;
+    }
+    
+    .mat-table {
+    font-size: 12px;
+    width: 100%;
+    
+    }
+    .logs-table1n .mat-table {
+    font-size: 10px !important;
+    }
+    
+    .mat-column-date {
+    max-width: 120px; /* adjust the width as per your requirement /
+    }
+    .mat-column-startTime {
+    max-width: 120px; / adjust the width as per your requirement /
+    }
+    .mat-column-endTime {
+    max-width: 120px; / adjust the width as per your requirement */
+    }
+    
+    .mat-column-productiveTime {
+    max-width: 120px; /* adjust the width as per your requirement */
+    }
+    
+    .mat-column-nonProductiveTime {
+    
+      min-width: 140px;
+    max-width: 300px; /* adjust the width as per your requirement */
+    }
+    
+    .mat-column-productivePercentage{
+    max-width: 100px; /* adjust the width as per your requirement */
+    }
+    
+    .mat-column-idleTime {
+    max-width: 115px; /* adjust the width as per your requirement /
+    }
+    .mat-column-totalTime {
+    max-width: 170px; / adjust the width as per your requirement /
+    }
+    .mat-column-holiday {
+    max-width: 120px; / adjust the width as per your requirement */
+    }
+    
+    .mat-header-cell {
+    background: #23384e;
+    color: #fff;
+    padding: 7px 10px;
+    /* font-weight: 500; */
+    font-size: 8px;
+    border: 1px solid #d9d9d9;
+    width: 200%;
+    
+    }
+    
+    .mat-cell {
+    padding: 5px 10px;
+    border: 1px solid #d9d9d9;
+    font-size: 12px;
+    }
+    
+    .mat-row:nth-child(odd) {
+    background: #E9E9E9;
+    }
+    
+    .mat-row:nth-child(even) {
+    background: #fff;
+    }
+    
+    /* .red-row {
+    background-color: red;
+    } */
+    
+  
+    
+    :host ::ng-deep .mat-row.red-row {
+    background-color: rgb(244, 147, 147);
+    }
+    
+    :host ::ng-deep .mat-row.blue-row{
+    background-color: rgb(173, 173, 255);
+    }
+    
+    :host ::ng-deep .mat-row.yellow-row{
+    background-color: rgb(234, 234, 202);
+    }
+    
+    @media (min-width: 1200px) {
+      .table-header {
+        width: 10%;
+        font-size: 16px;
+      }
+    }
+  
+    @media screen and (max-width: 767px) {
+    .mat-header-cell {
+    font-size: 8px;
+    width: auto;
+    white-space: nowrap;
+    }
+    
+    .mat-cell {
+    font-size: 10px;
+    padding: 3px 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    }
+    
+    .mat-column-date,
+    .mat-column-startTime,
+    .mat-column-endTime,
+    .mat-column-productiveTime,
+    .mat-column-nonProductiveTime,
+    .mat-column-productivePercentage,
+    .mat-column-idleTime,
+    .mat-column-totalTime,
+    .mat-column-holiday {
+    max-width: none;
+    }
+    
+    .mat-header-row {
+    display: none;
+    }
+    }
+
+
+    /* perfect code 2 */
+
+    .logs-table1n {
+        margin-top: 20px;
+      }
+      
+      .atd-table1 {
+        border: 1px solid #e0e0e0;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      
+      .mat-elevation-z8 {
+        box-shadow: none;
+      }
+      
+      .mat-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        width: 100%
+      
+      }
+      
+      th {
+        background-color: purple;
+        color: white;
+        font-weight: bold;
+        padding: 10px;
+        text-align: center;
+      }
+      
+      td {
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      .red-row {
+        background-color: #ffebee;
+      }
+      
+      .yellow-row {
+        background-color: #fff9c4;
+      }
+      
+      .blue-row {
+        background-color: #e3f2fd;
+      }
+      
+      .red-cell {
+        color: red;
+      }
+      
+        
+      .mat-cell:nth-child(n+4) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      
+      .mat-header-row {
+        background-color: #23384e;
+        
+      }
+      
+      .mat-header-cell {
+        background: #23384e;
+        color: #fff;
+       
+        /* font-weight: 500; */
+        font-size: 8px;
+       
+        width: 200%;
+        
+        }
+      
+        .mat-cell{
+          font-size: 10px;
+        }
+      
+        
+        
+        
+        

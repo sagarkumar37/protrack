@@ -1,0 +1,119 @@
+<!-- chatgpt -->
+<div class="log-out">
+<div class="header">
+  <div class="container">
+  <div class="row">
+  <div class="col-md-12">
+  <div class="logo"><img src="assets/img/logo.png"height="250" width="200"></div>
+  </div>
+  </div>
+  </div>
+  </div>
+<div class ="logout-page" style = "background-color: #f3f3f3c4;">
+    <div class = "container">
+      <div class = "row">
+
+        <div class="col-md-12">
+    <div class="col-md-12">
+      <h4>You have worked for "{{ minutes_worked }}" minutes kindly please fill your timesheet</h4>
+              </div>
+               <div class="col-md-12">
+             <div class="table-responsive tablenw"> 
+  <table>
+    <tbody>
+      <tr>
+        <th>Description</th>
+        <th>Time(Min)</th>
+        <th>Activity</th>
+        <th>&nbsp;</th>
+      </tr>
+      <tr *ngFor="let input of inputs; let i = index">
+        <td>
+        
+          <input class = "form-control" placeholder="Enter Activity Descriptioin" [(ngModel)]="inputs[i].description"  (ngModelChange)="onInputChange(i, 'description', $event)" required>
+          
+        </td>
+        <td>
+         
+          <input class = "form-control"[(ngModel)]="inputs[i].time" placeholder="Enter time in minutes" (ngModelChange)="onInputChange(i, 'time', $event)" type="number" min="0" max="1440"  required>
+    
+        </td>
+        <td>
+
+          <form [formGroup]="stateForm">
+
+            <input type="text" class="form-control1 plain-input" placeholder="Please Search and Select Activity"
+                   formControlName="stateGroup"
+                   required
+                   [matAutocomplete]="autoGroup">
+                   
+            <mat-autocomplete #autoGroup="matAutocomplete" (optionSelected)="onOptionSelected(i, $event)">  
+              <mat-optgroup *ngFor="let group of stateGroupOptions | async" [label]="group.letter">
+                <mat-option *ngFor="let name of group.names" [value]="name">{{ name }}</mat-option>
+              </mat-optgroup>
+            </mat-autocomplete>  
+          </form>
+          
+        </td>
+        <td>
+          <div >
+            <td align="center">
+            <button class="btn btn-secondary" (click)="addInput()" [disabled]="inputs.length === 10 || !isValidInput()">
+              <i class="fa fa-plus" aria-hidden="true">
+  
+              </i>
+            
+            </button>
+            
+            <button type="reset" (click)="removeInput(i)" class="btn btn-outline-secondary">
+              <i class="fa fa-times" aria-hidden="true">
+              </i>
+            </button>
+              </td>
+
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  </div>
+</div>
+   <div class = "col-md-12">
+  <div class= "logout-inner">
+  <div class = "row">
+
+  <div class="col-md-3">
+    <div class="form-group">
+  <label>Total Time Usage:</label>
+    <div class="form-control" >{{minutes_worked}}</div>
+  </div> 
+    </div>
+  <div class = "col-md-3">
+    <div class="form-group">
+    <label>Total Time Calculated:</label>
+      <div class="form-control">
+        {{totalTime}}
+      </div>
+  </div>
+  </div>
+      <div class = "col-md-3">
+        <div class="form-group">
+        <label>Remaining Time:</label>
+        <div class="form-control">{{minutes_worked-totalTime}}</div>
+      </div>
+    </div>
+      <div class = "col-md-3">
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button class ="btn btn-outline-primary" (click)="saveInputs()">Save</button>
+      </div>
+    </div>  
+  </div>
+    </div>
+  </div> 
+  </div>
+  </div>
+  </div>
+
+</div>

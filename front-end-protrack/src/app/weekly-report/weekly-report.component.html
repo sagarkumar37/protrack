@@ -1,0 +1,222 @@
+<!-- <table>
+    <tbody>
+        <tr>
+            <th>Task</th>
+            <th>Description</th>
+            <th>Challenge Faced</th>
+            <th>AI Tool Used</th>
+            <th>Status</th>
+            <th>&nbsp;</th>
+        </tr>
+
+        <tr *ngFor="let input of inputs; let i = index">
+            <td>
+                <input class ="form-control" type="select" [(ngModel)]="input.task" required/>
+            </td>
+            <td>
+                <input class ="form-control" type="text" [(ngModel)]="input.description" required/>
+            </td>
+            <td>
+                <input class ="form-control" type="text" [(ngModel)]="input.challenge" required/>
+            </td>
+            <td>
+                <input class ="form-control" type="text" [(ngModel)]="input.aiTool" required/>
+            </td>
+            <td>
+                <input class ="form-control" type="select" [(ngModel)]="input.status" required/>
+            </td>
+           
+            <td>
+                <button class="btn btn-success" (click)="addInput()">Add</button>
+            </td>
+
+            <td>
+                <button class="btn btn-danger" (click)="deleteInput(i)">Delete</button>
+            </td>
+
+
+        </tr>
+
+
+
+        
+    </tbody>
+</table> -->
+
+<div class="form-group">
+    
+  <select id="weekSelect" class="form-select custom-width" [(ngModel)]="selectedOption" (change)="onSelectChange()">
+      <option disabled selected>Select Week</option>
+      <option  selected value="current_week">Current Week</option>
+      <option value="last_week">Last Week</option>
+  </select>
+</div>
+
+<br>
+<br>
+<br>
+
+<mat-card class="fixed-height-card">
+  <mat-card-header>
+    <mat-card-title>Insert Weekly Tasks</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+
+<div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>S No.</th>
+          <th>Activity</th>
+          <th>Task Description</th>
+          <th>Status</th>
+          <th>Challenge Faced</th>
+          <!-- <th>AI Tool Used</th> -->
+          <!-- raksha -->
+          <!-- <th>Action</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let task of incompletePlans; let i = index">
+          <td>{{i + 1}}</td>
+            <td><div class="form-control">{{task.activity_name}}</div></td>
+            <td><div class="form-control">{{task.task_description}}</div></td>
+            <td>
+              <select class="form-control" [(ngModel)]="selectedStatusMap[task.task_description]">
+                <option value="Incomplete">Incomplete</option>
+                <option value="Complete">Complete</option>
+              </select>
+            </td>
+            <td> </td>
+            <!-- <td>Null</td> -->
+           <!--<td>
+              <button class="btn btn-primary" (click)="updatePlans(task.id, selectedStatusMap[task.task_description])">Update Status</button>
+            </td>-->
+          </tr>
+
+        <!--<tr *ngFor="let input of inputs; let i = index">
+            <td>
+              <div class="form-control" style="width:max-content">{{i+1}}</div>
+            </td>-->
+            <tr *ngFor="let input of inputs; let i = index">
+              <td>{{i + 1 + incompletePlans.length}}</td>
+              
+
+            <!-- task td should be select dropdown -->
+            
+          <td>
+            <!-- <div class="form-control" style="display: inline-block; white-space: nowrap;">
+              {{ input2.activityName || 'Select Task Description' }}
+            </div> -->
+            
+            <!-- <div class = "form-control" style="width:max-content">{{input2.activityName || 'Select Task Description'}}</div> -->
+
+            <select name="activity" class="form-control" (change)="onActivityChange(input.activity,i)"[(ngModel)]="input.activity">
+              <option value ="">Select Activity</option>
+              <option *ngFor="let activity of activities" [value]="activity">{{ activity }}</option>
+            </select>
+            <!-- <input class="form-control" type="select" [(ngModel)]="input.task" required/> -->
+          </td>
+          <td>
+
+            <!-- <input class="form-control" type="text" [(ngModel)]="input.description" required/> -->
+
+            <select class ="form-control" [(ngModel)]="input.description">
+              <option value="">Select Task Description</option>
+              <option *ngFor="let description of taskDescriptionsPerRow[i]" [value]="description">{{ description }}</option>
+            </select>
+          </td>
+          <td>
+            <select class="form-control" [(ngModel)]="input.status" required>
+              <option value="Planned">Planned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </td>
+          <td>
+            <input class="form-control" type="text" [(ngModel)]="input.challenge" required/>
+          </td>
+          <!-- <td> 
+            <input class="form-control" type="text" [(ngModel)]="input.aiTool" required/>
+          </td>-->
+   
+          <td class="button-container">
+            <button class="btn " (click)="addNewInput(i)">+</button>
+            <button class="btn btn-outline-secondary" type="reset" *ngIf="inputs.length > 1" (click)="deleteInput(i)"> - </button>
+          </td>
+        </tr>
+        
+        
+      </tbody>
+      <!-- <button class="btn btn-primary save"<i class="fa fa-plus" aria-hidden="true">,btn btn-outline-secondary (click)="saveInput()">Save</button> -->
+
+    </table>
+    <!-- Save Button btn-secondary -->
+    <!--<app-plan></app-plan>-->
+    <button mat-button class="save" (click)="saveInputTasks()">Save</button>
+  </div>
+
+
+</mat-card-content>
+<mat-card-actions>
+  <!-- <button mat-button class="save" (click)="saveInputTasks()">Save</button> -->
+</mat-card-actions>
+</mat-card>
+
+
+<br>
+<br>
+<autocomplete-optgroup-example></autocomplete-optgroup-example>
+    <br>
+    <br>
+
+
+  <div class = "table-responsive">
+    <mat-card class="fixed-height-card2">
+      <mat-card-header>
+        <mat-card-title>Insert Week Ratings</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+
+      <div class="table-container">
+
+        
+      </div>
+    <table class ="table">
+        <thead>
+          <tr>
+            <th>Busyness %</th>
+            <th>Satisfaction %</th>
+            <th>Core %</th>
+            <th>Learning%</th>
+            <th>Skill Acquired</th>
+            <th>Ai Productivity %</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <td><input class ="form-control" type =number required [(ngModel)]="ratings.busyness"></td>
+          <td><input class ="form-control" type =number required [(ngModel)]="ratings.satisfaction"></td>
+          <td><input class ="form-control" type =number required [(ngModel)]="ratings.core"></td>
+          <td><input class ="form-control" type =number required [(ngModel)]="ratings.learning"></td>
+          <td><input class ="form-control" type =text [(ngModel)]="ratings.skill_acquired"></td>
+          <td><input class ="form-control" type =number [(ngModel)]="ratings.ai_productivity"></td>
+          
+          <button mat-button class="save" (click)="saveInputRatings()">Save</button>
+        </tbody>
+        <br>
+
+        <!-- <button class="btn btn-primary save" (click)="saveInput()">Save</button> -->
+    </table>
+    
+  </mat-card-content>
+  <mat-card-actions>
+   
+  </mat-card-actions>
+  </mat-card>
+    
+  </div>
+
+
+  
