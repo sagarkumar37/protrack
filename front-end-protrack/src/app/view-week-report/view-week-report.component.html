@@ -1,0 +1,53 @@
+<p>Week Tasks</p>
+<br>
+<div class="table-responsive">
+<table class="table">
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>Status</th>
+            <th>Challenge</th>
+            <th>Al Tool</th>
+        </tr> 
+    </thead>
+    <tbody>
+        <tr *ngFor="let input of inputs;let i = index">
+            <td>{{input.task}}</td>
+            <td>{{input.status}}</td>
+            <td>{{input.challenge}}</td>
+            <td>{{input.aiTool}}</td>
+            
+
+        </tr>
+    </tbody>
+</table>
+</div>
+<br>
+<br>
+<div>Ratings</div>
+<br>
+<div class="table-responsive">
+    <table class = "table">
+        <thead>
+            <tr>
+                <th>Busyness %</th>
+                <th>Satisfaction %</th>
+                <th>Learning %</th>
+                <th>Core %</th>
+                <th>AI Productivity %</th>
+                <th>Skill Acquired</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ratings.busyness}}</td>
+                <td>{{ratings.satisfaction}}</td>
+                <td>{{ratings.learning}}</td>
+                <td>{{ratings.core}}</td>
+                <td>{{ratings.aiProductivity}}</td>
+                <td>{{ratings.skillAcquired}}</td>
+                
+            </tr>
+        </tbody>
+    </table>
+</div>

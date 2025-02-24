@@ -1,0 +1,102 @@
+<div class="row logs-table1n">
+  <div class="col-md-12">
+    <div class="atd-table1">
+      <div class="table-responsive">
+        <div class="mat-elevation-z8">
+          
+          <div style="width:100%" style = "overflow-x:auto">
+<ng-container *ngIf="dataSource">
+    <mat-table matTableExporter class = "table" [dataSource]="dataSource" matSort #exporter="matTableExporter">
+  
+      <!-- Date Column -->
+      <ng-container matColumnDef="date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header class="date-column-header">Date</mat-header-cell>
+        <mat-cell *matCellDef="let row" class="date-column-cell">{{ row.date }}</mat-cell>
+      </ng-container>
+  
+      <!-- Start Column -->
+      <ng-container matColumnDef="startTime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Start</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.startTime }}</mat-cell>
+      </ng-container>
+  
+      <!-- End Column -->
+      <ng-container matColumnDef="endTime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>End</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.endTime }}</mat-cell>
+      </ng-container>
+  
+      <!-- Productive Column -->
+      <ng-container matColumnDef="productiveTime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Productive</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.productiveTime }}</mat-cell>
+      </ng-container>
+  
+      <!-- Non-Productive Column -->
+      <ng-container matColumnDef="nonProductiveTime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header style="width: 100px;">Non-Productive</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.nonProductiveTime }}</mat-cell>
+      </ng-container>
+  
+      <!-- % Productive Column -->
+      <ng-container matColumnDef="productivePercentage">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>%Productive</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.productivePercentage }}</mat-cell>
+      </ng-container>
+  
+      <!-- Idle Time Column -->
+      <ng-container matColumnDef="idleTime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Idle Time</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.idleTime }}</mat-cell>
+      </ng-container>
+  
+      <!-- Holiday Column -->
+      <ng-container  *ngIf="true" matColumnDef="holiday">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Holiday</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.holiday ===1 ? 'Yes': row.holiday === 0 ? 'No' : '' }}</mat-cell>
+      </ng-container> 
+  
+      <!-- Total Time Column -->
+      <ng-container matColumnDef="totalTime">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Total Time</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.totalTime }}</mat-cell>
+      </ng-container>
+  
+      <!-- On Leave Column -->
+      <ng-container matColumnDef="onLeave" style="display:hidden" >
+        <mat-header-cell *matHeaderCellDef  mat-sort-header style="display:hidden">On Leave</mat-header-cell>
+        <!-- <mat-cell *matCellDef="let row" [class.red-cell]="row.onLeave" >{{ row.onLeave }}</mat-cell> -->
+        <mat-cell *matCellDef="let row" [class.red-cell]="row.onLeave" style="display:hidden">{{ row.onLeave === 1 ? 'Yes' : row.onLeave === 0 ? 'No' : '' }}</mat-cell>
+
+      </ng-container>
+  
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <!-- <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'red-row': row.onLeave}"></mat-row> -->
+
+      <mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="{'red-row': row.onLeave === 1 ,'yellow-row': row.holiday === 1 && row.productiveTime == null,
+      'blue-row': row.holiday === 1 && row.productiveTime !== null} "></mat-row>
+
+  
+    </mat-table>
+    <!-- <button mat-button (click)="exporter.exportTable('csv')" class = 'fa fa-download'>Download </button> -->
+    <!-- <button mat-button (click)="exporter.exportTable('xlsx')">Export as Excel</button> -->
+    
+
+    <!-- <button mat-button (click)="exporter.exportTable('csv', {fileName: firstName + '-' + lastName + '-data'})">Export to CSV</button> -->
+
+   
+    <button class="btn ml-auto" (click)="exporter.exportTable('xlsx')"><i class="fa fa-download"></i> Export</button>
+
+    
+ 
+   
+    <mat-paginator [pageSizeOptions]="[5,10,15, 20, 50]" showFirstLastButtons></mat-paginator>
+  </ng-container>
+</div>
+  
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  

@@ -1,0 +1,82 @@
+<!-- <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+    <ng-container *ngFor="let column of columns" [matColumnDef]="column.columnDef">
+      <th mat-header-cell *matHeaderCellDef>
+        {{column.header}}
+      </th>
+      <td mat-cell *matCellDef="let row">
+        {{column.cell(row)}}
+      </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table> -->
+  
+
+  <!-- table.component.html -->
+
+  <div class="row">
+    <div class="col-md-12">
+    <div class="atd-table1">
+    <div class="table-responsive">
+<div class="mat-elevation-z8">
+  <table class = "table" mat-table [dataSource]="dataSource" matSort>
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="position">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size: 16px;"> S. No. </th>
+      <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+    </ng-container>
+
+    <!-- Date Column -->
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size: 16px;"> Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+    </ng-container>
+
+    <!-- Punch In Column -->
+    <ng-container matColumnDef="punchIn">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size: 16px;"> Punch In </th>
+      <td mat-cell *matCellDef="let element"> {{element.punchIn}} </td>
+    </ng-container>
+
+    <!-- Punch Out Column -->
+    <ng-container matColumnDef="punchOut">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size: 16px;"> Punch Out </th>
+      <td mat-cell *matCellDef="let element"> {{element.punchOut}} </td>
+    </ng-container>
+
+    <!-- Project 1 Column -->
+    <ng-container matColumnDef="proj1">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size: 16px;"> Project 1 </th>
+      <td mat-cell *matCellDef="let element"> {{element. proj1}} </td>
+    </ng-container>
+
+    <!-- Project 2 Column -->
+    <ng-container matColumnDef="proj2">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size: 16px;"> Project 2 </th>
+      <td mat-cell *matCellDef="let element"> {{element.proj2}} </td>
+    </ng-container>
+
+    <!-- Project 3 Column -->
+    <ng-container matColumnDef="proj3">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header style="font-size: 16px;"> Project 3 </th>
+      <td mat-cell *matCellDef="let element"> {{element.proj3}} </td>
+    </ng-container>
+
+    <!-- Table Rows -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+
+  <!-- Paginator -->
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+
+
+  

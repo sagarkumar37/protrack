@@ -1,0 +1,50 @@
+<!-- <p>attend works!</p> -->
+<div class="dashboard-main">
+    <div class="attendance-main">
+    <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+
+    <div class="timecount">
+        <ng-container *ngIf="elapsedTime; else notPunchedInYet">{{ elapsedTime }}</ng-container>
+        <ng-template class="timecount" #notPunchedInYet>Punch in to start</ng-template>
+    </div>
+      
+    </div>
+    </div>
+    <div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">
+    <div class="punchin-at">
+    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+    <!-- <div class="time">16:32 | 14-02-2023</div> -->
+    <div class="time">Start Your Day:</div>
+    <button [disabled]="isDataFetchedS" type="button" class="btn btn-outline-primary" (click)="startTimer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-in"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>{{punchedInText}}</button>
+    </div>
+    </div>
+    <div class="col-md-3">
+    <div class="punchout-at">
+    <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+    <!-- <div class="time">16:32 | 14-02-2023</div> -->
+    
+    <div class="time">End your day</div>
+    <button [disabled]="isDataFetchedE" type="button" class="btn btn-outline-primary"(click)="stopTimer()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-in"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>{{punchedOutText}}</button>
+    </div>
+    </div>
+    
+    </div>
+    
+    <div class="row">
+    <div class="col-md-12">
+    <div class="atd-table1">
+    <div class="table-responsive">
+    
+    </div>
+   
+    </div>
+    </div>
+    </div>
+
+    </div>
+    <app-table></app-table>
+    </div>

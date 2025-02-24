@@ -1,0 +1,21 @@
+/* .header
+{
+    height:auto;
+    
+}
+
+.headertext{
+    font-size: medium;
+} */
+
+.header {
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .header-text {
+    font-size: medium;
+  }
+  

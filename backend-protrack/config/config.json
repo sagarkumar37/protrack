@@ -1,0 +1,13 @@
+{
+  "uiUrl": "https://protrack.example.com",
+  "fromMail": "noreply@example.com",
+  "fromName": "Protrack",
+  "mailSetting": {
+    "host": "smtp.gmail.com",
+    "port": 587,
+    "auth": {
+      "user": "email@example.com",
+      "pass": "passwd"
+    }
+  }
+}

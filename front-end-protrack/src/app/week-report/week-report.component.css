@@ -1,0 +1,187 @@
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid black;
+}
+
+th {
+  background-color: #c0c0c0;
+}
+
+
+/* Common styles for both tables */
+.table-responsive {
+overflow-x: auto;
+padding: 15px;
+}
+
+.table {
+width: 100%;
+max-width: 100%;
+background-color: white;
+border-collapse: collapse;
+margin-bottom: 15px;
+}
+
+/* Style for the Save button */
+.save {
+margin-top: 10px;
+float: right;
+}
+label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+select {
+  padding: 5px;
+  font-size: 16px;
+  border: 1px transparent #ccc;
+  border-radius: 4px;
+}
+.row {
+  margin-bottom: 10px;
+}
+/* Additional styling for the first table */
+.table-responsive:first-child .table {
+transform: scale(0.9);
+transform-origin: 0 0;
+}
+
+/* Additional styling for the second table */
+.table-responsive:last-child .table {
+/* Add any specific styling for the second table if needed */
+}
+
+
+/* .fixed-height-card { */
+/* max-height: 300px; Set your desired fixed height here */
+/* overflow-y: auto; Enable vertical scrolling when content overflows */
+/* } */
+.taskplan{
+  text-align: right;
+}
+.fixed-height-card2 {
+ /* Set your desired fixed height here */
+/* Enable vertical scrolling when content overflows */
+}
+
+
+
+
+/* Styling the select dropdown */
+.select-dropdown {
+position: relative;
+display: inline-block;
+width: 100%;
+height: 35px;
+border: 1px solid #ccc;
+border-radius: 4px;
+padding: 6px 12px;
+background-color: #fff;
+}
+
+/* Styling the dropdown arrow */
+.select-dropdown::after {
+content: "\f0d7";
+position: absolute;
+right: 10px;
+top: 10px;
+font-family: "Font Awesome";
+font-size: 18px;
+color: #ccc;
+}
+
+/* Styling the dropdown menu */
+.select-dropdown-menu {
+position: absolute;
+top: 35px;
+left: 0;
+right: 0;
+z-index: 1000;
+background-color: #fff;
+border: 1px solid #ccc;
+border-radius: 4px;
+box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+max-height: 300px;
+overflow-y: scroll;
+}
+
+/* Styling the dropdown list items */
+.select-dropdown-item {
+padding: 6px 12px;
+cursor: pointer;
+}
+
+.select-dropdown-item:hover {
+background-color: #eee;
+}
+
+/* Styling the selected dropdown item */
+.select-dropdown-item.selected {
+background-color: #ccc;
+color: #fff;
+}
+/* Custom CSS for Angular Material Form Fields */
+.custom-mat-form-field {
+width: 100%; /* Full-width */
+margin: 8px 0; /* Add some top and bottom margin */
+}
+
+/* Additional CSS for mat-select */
+.example-additional-selection {
+opacity: 0.75;
+font-size: 0.75em;
+}
+.button-container button{
+  margin-right: 10px;
+}
+.button-container{
+  margin-right: 10rem;
+  /* margin-top: 5px; */
+}
+.dropdown{
+  margin-left: 10rem;
+}
+.btn {
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  -webkit-border-radius: 8;
+  -moz-border-radius: 8;
+  border-radius: 8px;
+  font-family: Arial;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 5px 8px 6px 8px;
+  
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+.custom-width {
+  width: 200px;
+   /* Set your desired width here */
+}
+/* Styling the dropdown menu when it is wider than the viewport */
+@media (min-width: 768px) {
+.select-dropdown-menu {
+  width: 100%;
+}
+}
+
+
