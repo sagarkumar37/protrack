@@ -1,6 +1,6 @@
 CREATE DATABASE  IF NOT EXISTS `protrack` /*!40100 DEFAULT CHARACTER SET utf8mb3 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `protrack`;
--- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.44, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: protrack
 -- ------------------------------------------------------
@@ -36,7 +36,60 @@ CREATE TABLE `activity` (
   KEY `proj_id` (`proj_id`),
   CONSTRAINT `activity_ibfk_1` FOREIGN KEY (`department`) REFERENCES `departments` (`dep_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `activity_ibfk_2` FOREIGN KEY (`proj_id`) REFERENCES `projects` (`proj_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=815 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1018 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `activity_masters`
+--
+
+DROP TABLE IF EXISTS `activity_masters`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_masters` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) NOT NULL,
+  `type_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `type_id` (`type_id`),
+  CONSTRAINT `activity_masters_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `activity_types` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=137 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `activity_types`
+--
+
+DROP TABLE IF EXISTS `activity_types`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `activity_types` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `type_name` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `type_name` (`type_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `assigned_leave`
+--
+
+DROP TABLE IF EXISTS `assigned_leave`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `assigned_leave` (
+  `assigned_leave_id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `leave_type_id` int NOT NULL,
+  `max_leaves` decimal(5,2) NOT NULL DEFAULT '0.00',
+  PRIMARY KEY (`assigned_leave_id`),
+  KEY `employee_id` (`employee_id`),
+  KEY `leave_type_id` (`leave_type_id`),
+  CONSTRAINT `assigned_leave_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `assigned_leave_ibfk_2` FOREIGN KEY (`leave_type_id`) REFERENCES `leave_type` (`leave_type_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,7 +120,7 @@ CREATE TABLE `attendance_regularization` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `req_id_index` (`req_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,10 +147,11 @@ DROP TABLE IF EXISTS `customers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `customers` (
-  `customer_id` int NOT NULL,
+  `customer_id` int NOT NULL AUTO_INCREMENT,
   `customer_name` varchar(50) NOT NULL,
+  `customer_code` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,6 +193,30 @@ CREATE TABLE `departments` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `employee_locations`
+--
+
+DROP TABLE IF EXISTS `employee_locations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `employee_locations` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` int NOT NULL,
+  `event_type` enum('punch_in','punch_out','break_start','break_end') NOT NULL,
+  `event_time` datetime NOT NULL,
+  `latitude` decimal(10,8) NOT NULL,
+  `longitude` decimal(11,8) NOT NULL,
+  `accuracy` float DEFAULT NULL,
+  `location_name` varchar(255) DEFAULT NULL,
+  `area` varchar(100) DEFAULT NULL,
+  `recorded_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`,`event_time`),
+  CONSTRAINT `employee_locations_ibfk_1` FOREIGN KEY (`employee_id`) REFERENCES `employees` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7662 DEFAULT CHARSET=utf8mb3;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `employees`
 --
 
@@ -163,6 +241,26 @@ CREATE TABLE `employees` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Temporary view structure for view `employees_vw`
+--
+
+DROP TABLE IF EXISTS `employees_vw`;
+/*!50001 DROP VIEW IF EXISTS `employees_vw`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `employees_vw` AS SELECT 
+ 1 AS `id`,
+ 1 AS `department`,
+ 1 AS `first_name`,
+ 1 AS `middle_name`,
+ 1 AS `last_name`,
+ 1 AS `username`,
+ 1 AS `role`,
+ 1 AS `enabled`,
+ 1 AS `email_id`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `holiday_mst`
 --
 
@@ -176,7 +274,7 @@ CREATE TABLE `holiday_mst` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -190,7 +288,8 @@ CREATE TABLE `leave_requests` (
   `employee_id` int NOT NULL,
   `from_date` date NOT NULL,
   `to_date` date NOT NULL,
-  `leave_type` varchar(45) NOT NULL,
+  `from_date_leave_duration` enum('0.25','first_half','second_half','0.75','1') NOT NULL,
+  `to_date_leave_duration` enum('0.25','first_half','second_half','0.75','1') NOT NULL,
   `reason` varchar(100) DEFAULT NULL,
   `status` varchar(45) NOT NULL,
   `hod_comments` varchar(45) DEFAULT NULL,
@@ -201,9 +300,29 @@ CREATE TABLE `leave_requests` (
   `request_date` date DEFAULT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
   `emp_email` varchar(45) NOT NULL,
+  `leave_type_id` int NOT NULL,
+  `half_day_type` enum('first_half','second_half') DEFAULT NULL,
+  `leave_days` decimal(5,2) DEFAULT NULL,
+  `leave_type_name` varchar(60) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `req_id_UNIQUE` (`req_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=175 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `leave_type`
+--
+
+DROP TABLE IF EXISTS `leave_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `leave_type` (
+  `leave_type_id` int NOT NULL AUTO_INCREMENT,
+  `leave_type_name` varchar(255) NOT NULL,
+  `description` text,
+  PRIMARY KEY (`leave_type_id`),
+  UNIQUE KEY `leave_type_name` (`leave_type_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -256,10 +375,12 @@ CREATE TABLE `projects` (
   `capitalizable` tinyint(1) DEFAULT NULL,
   `accountable` tinyint(1) DEFAULT NULL,
   `contact_person` int DEFAULT NULL,
+  `customer_code` varchar(50) DEFAULT NULL,
+  `non_billable_type` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`proj_id`),
   KEY `contact_person` (`contact_person`),
   CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`contact_person`) REFERENCES `employees` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -297,7 +418,7 @@ CREATE TABLE `weekly_plan_reports_v2` (
   `status` varchar(20) NOT NULL DEFAULT 'Planned',
   `due_date` date DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2219 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=3609 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -319,7 +440,7 @@ CREATE TABLE `weekly_ratings` (
   `ai_productivity` decimal(6,2) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_employee_week` (`year_week`,`employee_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1703 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2718 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -339,7 +460,7 @@ CREATE TABLE `weekly_task_reports` (
   `challenge_description` varchar(1000) NOT NULL DEFAULT 'No Challenges Faced',
   `ai_tool` varchar(100) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7149 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13311 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -392,6 +513,24 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Final view structure for view `employees_vw`
+--
+
+/*!50001 DROP VIEW IF EXISTS `employees_vw`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `employees_vw` AS select `employees`.`id` AS `id`,`employees`.`department` AS `department`,`employees`.`first_name` AS `first_name`,`employees`.`middle_name` AS `middle_name`,`employees`.`last_name` AS `last_name`,`employees`.`username` AS `username`,`employees`.`role` AS `role`,`employees`.`enabled` AS `enabled`,`employees`.`email_id` AS `email_id` from `employees` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -402,4 +541,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-02-20 18:58:26
+-- Dump completed on 2026-01-14  1:55:39
