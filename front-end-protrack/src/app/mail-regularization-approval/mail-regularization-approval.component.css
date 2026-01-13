@@ -1,0 +1,84 @@
+.regularization-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+  }
+  
+  .regularization-container {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 400px;
+    max-width: 100%;
+    text-align: center;
+  }
+  
+  h2 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .request-info {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  
+  .request-info p {
+    margin: 5px 0;
+  }
+  
+  .reason-text {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fafafa;
+    margin-top: 10px;
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  button {
+    width: 48%;
+  }
+  
+  button[color="primary"] {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  button[color="warn"] {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .regularization-container textarea {
+    resize: none;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #dcdcdc;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    width: 100%; 
+    min-height: 80px; 
+}
+
+.regularization-container textarea:focus {
+    border-color: #4a90e2;
+    outline: none; 
+    box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+.char-count {
+    font-size: 12px; 
+    color: #666; 
+    margin-top: 5px;
+    display: flex;
+}
+  
+  

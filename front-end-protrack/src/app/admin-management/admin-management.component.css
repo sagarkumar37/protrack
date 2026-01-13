@@ -1,0 +1,17 @@
+.admin-management {
+    padding: 20px;
+  }
+  
+  .holiday-management, .project-management, .hod-management {
+    margin-top: 20px;
+  }
+  
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  button {
+    margin-top: 10px;
+  }
+  

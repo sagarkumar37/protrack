@@ -1,0 +1,189 @@
+<div class="leave-application-container">
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="leave-card">
+        <h2 class="form-title">Apply Leave</h2>
+        
+        <form class="leave-form" (ngSubmit)="submitLeave()">
+          <!-- Employee Selector (Admin Only) -->
+          <div class="row">
+            <div class="col-md-12">
+              <div *ngIf="isAdmin" class="form-group">
+                <label class="form-label">Employee</label>
+                <select class="form-control" [(ngModel)]="selectedEmployeeId" (change)="onEmployeeSelected()" name="employee_id" required>
+                  <option value="" disabled selected>Select Employee</option>
+                  <option *ngFor="let emp of employeeList" [value]="emp.id">
+                    {{ emp.username }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Date Range Section -->
+          <div class="row">
+            <div class="col-md-12">
+              <label class="form-label">Leave Period</label>
+            </div>
+          </div>
+          
+          <div class="row">
+            <!-- From Date -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="date-label">From Date</label>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Select date</mat-label>
+                  <input matInput [matDatepicker]="fromDatePicker" [(ngModel)]="leaveForm.from_date" name="from_date" required>
+                  <mat-datepicker-toggle matSuffix [for]="fromDatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #fromDatePicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="date-label">Duration</label>
+                <select class="form-control" [(ngModel)]="leaveForm.from_date_leave_duration" 
+                        (change)="onFromDateLeaveDurationChange()" 
+                        name="from_date_leave_duration" required>
+                  <option value="" disabled selected>Select Duration</option>
+                  <option value="0.25">¼ Day</option>
+                  <option value="first_half">First Half</option>
+                  <option value="second_half">Second Half</option>
+                  <option value="0.75">¾ Day</option>
+                  <option value="1">Full Day</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!-- To Date -->
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="date-label">To Date</label>
+                <mat-form-field appearance="outline" class="full-width">
+                  <mat-label>Select date</mat-label>
+                  <input matInput [matDatepicker]="toDatePicker" [(ngModel)]="leaveForm.to_date" name="to_date" required>
+                  <mat-datepicker-toggle matSuffix [for]="toDatePicker"></mat-datepicker-toggle>
+                  <mat-datepicker #toDatePicker></mat-datepicker>
+                </mat-form-field>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-group">
+                <label class="date-label">Duration</label>
+                <select class="form-control" [(ngModel)]="leaveForm.to_date_leave_duration" 
+                        (change)="onToDateLeaveDurationChange()" 
+                        name="to_date_leave_duration" required>
+                  <option value="" disabled selected>Select Duration</option>
+                  <option value="0.25">¼ Day</option>
+                  <option value="first_half">First Half</option>
+                  <option value="second_half">Second Half</option>
+                  <option value="0.75">¾ Day</option>
+                  <option value="1">Full Day</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Leave Type -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Leave Type</label>
+                <select class="form-control" [(ngModel)]="selectedLeaveType" name="leave_types" 
+                        (change)="onLeaveTypeChange($event)" required>
+                  <option value="" disabled selected>Select Leave Type</option>
+                  <option *ngFor="let leave of leaveTypes" [ngValue]="leave">
+                    {{ leave?.leave_type_name || 'Unnamed Leave' }} 
+                    (Remaining: {{ leave?.remaining_balance || '0' }} days)
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Reason -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label class="form-label">Reason</label>
+                <textarea class="form-control" [(ngModel)]="leaveForm.reason" name="reason" 
+                          placeholder="Enter reason for leave" rows="4"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary submit-button">
+                  {{ isAdmin ? 'Create Leave' : 'Apply Leave' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Leave History Section -->
+    <div class="col-lg-4">
+      <div class="leave-history">
+        <h3 class="history-title">Leave History</h3>
+        
+        <div *ngIf="isLoading" class="loading-state">
+          <mat-spinner diameter="40"></mat-spinner>
+          <span>Loading leave history...</span>
+        </div>
+        
+        <div *ngIf="!isLoading && !isData" class="empty-state">
+          <img src="../../assets/img/smile.png" alt="No leaves">
+          <p>No leave requests found</p>
+        </div>
+
+        <div *ngIf="isData" class="leave-table-container">
+          <div class="table-responsive">
+            <table class="table leave-table">
+              <thead>
+                <tr>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let record of appliedLeaves">
+                  <td>{{ record.from_date | date:'mediumDate' }}</td>
+                  <td>{{ record.to_date | date:'mediumDate' }}</td>
+                  <td>{{ record.leaveType?.leave_type_name || '-' }}</td>
+                  <td>
+                    <span class="status-badge" [class.approved]="record.status === 'Approved'"
+                          [class.pending]="record.status === 'Pending'"
+                          [class.rejected]="record.status === 'Rejected'">
+                      {{ record.status }}
+                    </span>
+                  </td>
+                  <td>
+                    <button mat-icon-button color="primary" (click)="openLeaveDetail(record)">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                    <button *ngIf="record.status === 'Pending'" mat-icon-button color="warn" (click)="deleteLeave(record.id)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

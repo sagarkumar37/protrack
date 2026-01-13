@@ -1,0 +1,36 @@
+<div class="top-header">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="workspace-top">
+                <strong>{{firstName}} {{middleName}} {{lastName}}</strong>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="top-hd-right">
+                <div class="user-hd-top">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false" aria-label="User menu">
+                            <div class="user-photo">
+                                {{getFirstChar(firstName)}}{{getFirstChar(lastName)}}
+                            </div>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end user" role="menu">
+                            <li>
+                                <span class="dropdown-item-text">
+                                    {{firstName}} {{middleName}} {{lastName}}
+                                </span>
+                            </li>
+                            <li>
+                                <span class="dropdown-item-text">Employee Code: {{empCode}}</span>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" type="button" (click)="logout()">Log Out</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

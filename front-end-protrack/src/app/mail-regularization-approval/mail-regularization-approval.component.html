@@ -1,0 +1,28 @@
+<div class="regularization-page">
+
+    <div class="regularization-container">
+        <h2>Attendance Regularization</h2>
+
+        <p *ngIf="isAlreadyApproved">This attendance regularization request has already been approved.</p>
+
+        <div class="request-info" *ngIf="!isAlreadyApproved">
+            <p><strong>Employee Code:</strong> {{ regularizationRequest?.employeecode }}</p>
+            <p><strong>Date:</strong> {{ regularizationRequest?.date }}</p>
+            <p><strong>Requested Punch In Time:</strong> {{ regularizationRequest?.start_time }}</p>
+            <p><strong>Requested Punch Out Time:</strong> {{ regularizationRequest?.end_time }}</p>
+            <p><strong>Reason for Regularization:</strong></p>
+            <p class="reason-text">{{ regularizationRequest?.reason ? regularizationRequest?.reason : "Reason not
+                available" }}</p>
+        </div>
+        <div class="feedback" *ngIf="!isAlreadyApproved">
+            <textarea id="reason" rows="2" maxlength="200" [(ngModel)]="regularizationReason" name="reason"
+                #reasonInput="ngModel" aria-label="Feedback"></textarea>
+            <span class="char-count">{{ regularizationReason?.length || 0 }}/200 characters</span>
+        </div>
+
+        <div class="action-buttons" *ngIf="!isAlreadyApproved">
+            <button mat-button color="primary" (click)="approveRegularization('approved')">Approve</button>
+            <button mat-button color="warn" (click)="rejectRegularization('reject')">Reject</button>
+        </div>
+    </div>
+</div>

@@ -32,20 +32,21 @@ export class SendDateService {
   postDate(punchInTime: Date) :Observable<any>{
 
     
-    let token:string ="";
-    let json: string | null = localStorage.getItem("response");
-      if (json) {
-        console.log("json "+json);
-      token = JSON.parse(json).token;
-       console.log(token);
-    }
+    // let token:string ="";
+    // let json: string | null = localStorage.getItem("response");
+    //   if (json) {
+    //     console.log("json "+json);
+    //   token = JSON.parse(json).token;
+    //    console.log(token);
+    // }
 
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    };
-    console.log("this is header "+ headers.Authorization)
-    return this.http.post<any[]>(this.punchInApiUrl, {punchInTime},{ headers });
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   'Authorization': `Bearer ${token}`
+    // };
+    // console.log("this is header "+ headers.Authorization)
+    console.log("punchInApiUrl:", this.punchInApiUrl);    
+    return this.http.post<any[]>(this.punchInApiUrl, punchInTime);
     
 
     
@@ -53,21 +54,21 @@ export class SendDateService {
 
   postDate2(punchOutTime: Date) :Observable<any>{
     // const token = this.getCookieValue('token');
-    let token:string ="";
-    let json: string | null = localStorage.getItem("response");
-      if (json) {
-        console.log("json "+json);
-      token = JSON.parse(json).token;
-       console.log(token);
-    }
+    // let token:string ="";
+    // let json: string | null = localStorage.getItem("response");
+    //   if (json) {
+    //     console.log("json "+json);
+    //   token = JSON.parse(json).token;
+    //    console.log(token);
+    // }
 
-    const headers = {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    };
-    console.log("this is header "+ headers.Authorization)
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   'Authorization': `Bearer ${token}`
+    // };
+    // console.log("this is header "+ headers.Authorization)
 
-    return this.http.post<any[]>(this.punchOutApiUrl, {punchOutTime},{ headers });
+    return this.http.post<any[]>(this.punchOutApiUrl, punchOutTime);
 
     
   }   

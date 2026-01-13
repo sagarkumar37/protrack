@@ -18,9 +18,9 @@ import 'bootstrap';
 })
 export class TestDashboardComponent implements OnInit{
  
-  firstName: string;
-  middleName: string;
-  lastName: string;
+  firstName: string= '';
+  middleName: string= '';
+  lastName: string= '';
 
   isShown1 = false;
   isShown = false;
@@ -38,7 +38,8 @@ export class TestDashboardComponent implements OnInit{
   admin_report: boolean =false;
 
   tsFlag: boolean;
-
+  showAdminReport: boolean = false;
+  isHod: any;
   constructor(private timesheetFlag:TimesheetFlagService,
               private reloadService: ReloadService,
               private router: Router,
@@ -46,7 +47,13 @@ export class TestDashboardComponent implements OnInit{
               private empNameService: EmpnameService,
               private empCodeService: EmpcodeService,
               private headersService: HeadersService,
-              private empRole: FetchUserRoleService) { }
+              private empRole: FetchUserRoleService) { 
+              let response: any | null= localStorage.getItem("response");
+              response= JSON.parse(response);
+                if(response){
+                  this.isHod= response.isHod ? response.isHod.hod_id: null;
+                }
+              }
 
    headers = this.headersService.getHeaders();
 
@@ -87,15 +94,19 @@ export class TestDashboardComponent implements OnInit{
       } 
     );
 
-    this.empCodeService.fetchEmpCode(this.headers).subscribe(
-      data => {
+    this.empCodeService.fetchEmpCode().subscribe(
+      (data: any) => {
         this.empCode = data.id;
       },
-      error => {
+      (error: any) => {
         console.log('Error fetching employee code:', error);
       }
     );
 
+  }
+
+  getFirstChar(data: any) {
+    return data.charAt(0)
   }
 
   // toggling sidenav buttons
@@ -152,7 +163,8 @@ export class TestDashboardComponent implements OnInit{
     // 2. If user role is admin, navigate to admin-report component
 
     if(this.role == 'admin'){
-    this.router.navigate(['/admin-report']);
+      this.showAdminReport = true;
+    //this.router.navigate(['/admin-report']);
     }
   }
 

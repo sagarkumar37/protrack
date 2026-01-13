@@ -1,0 +1,208 @@
+/* Main Container */
+.leave-application-container {
+    /* padding: 20px; */
+    max-width: 1400px;
+    /* margin: 0 auto; */
+  }
+  
+  /* Card Styles */
+  .leave-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    margin-bottom: 20px;
+  }
+  
+  .form-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  /* Form Elements */
+  .form-group {
+    /* margin-bottom: 20px; */
+  }
+  
+  .form-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #4a5568;
+    margin-bottom: 8px;
+  }
+  
+  .form-control {
+    width: 100%;
+    padding: 15px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+  }
+  
+  .form-control:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.1);
+  }
+  
+  textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+  }
+  
+  /* Date Picker Adjustments */
+  .mat-form-field {
+    width: 100%;
+  }
+  
+  /* Submit Button */
+  .form-actions {
+    margin-top: 25px;
+    text-align: right;
+  }
+  
+  .btn-primary {
+    background-color: #4299e1;
+    border: none;
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    min-width: 120px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #3182ce;
+  }
+  
+  /* Leave History Section */
+  .leave-history {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 25px;
+    height: 100%;
+  }
+  
+  .history-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  /* Table Styles */
+  .table {
+    width: 100%;
+    margin-bottom: 0;
+  }
+  
+  .table th {
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #718096;
+    border-top: none;
+  }
+  
+  .table td {
+    vertical-align: middle;
+    font-size: 0.9rem;
+    color: #4a5568;
+  }
+  
+  .table .mat-icon-button{
+    width: 26px !important;
+  }
+
+  /* Status Badges */
+  .status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .status-badge.approved {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+  }
+  
+  .status-badge.pending {
+    background-color: #fffaf0;
+    color: #c05621;
+  }
+  
+  .status-badge.rejected {
+    background-color: #fff5f5;
+    color: #c53030;
+  }
+  
+  /* Loading and Empty States */
+  .loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    color: #718096;
+  }
+  
+  .loading-state span {
+    margin-left: 10px;
+  }
+  
+  .empty-state {
+    text-align: center;
+    padding: 30px;
+    color: #a0aec0;
+  }
+  
+  .empty-state img {
+    width: 60px;
+    height: 60px;
+    opacity: 0.7;
+    margin-bottom: 15px;
+  }
+  
+  .empty-state p {
+    font-size: 0.9rem;
+    margin-bottom: 0;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 992px) {
+    .leave-history {
+      margin-top: 20px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .leave-application-container {
+      padding: 15px;
+    }
+    
+    .leave-card, .leave-history {
+      padding: 20px;
+    }
+    
+    .form-title, .history-title {
+      font-size: 1.3rem;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .form-actions {
+      text-align: center;
+    }
+    
+    .btn-primary {
+      width: 100%;
+    }
+  }

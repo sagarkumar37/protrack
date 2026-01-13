@@ -171,7 +171,7 @@ body {
 .logo img {height:50px;}
 .logout-page {margin-top:25px;}
 .logout-page h4 {font-size:20px; font-weight:600; text-align:center;margin-bottom:0px;}
-.tablenw {margin-top:25px;}
+/* .tablenw {margin-top:25px;} */
 .tablenw table {width:100%; font-size:14px;}
 .tablenw table tr {}
 .tablenw table tr th {background: #23384e;color: #fff;padding:7px 10px;font-weight:500; border:1px solid #597899;}
@@ -373,7 +373,7 @@ nav ul li ul li a:hover {
 .punchout-at .btn:focus {outline:none;box-shadow:none;}
 .punchout-at .btn svg {width:20px; height:20px;margin-right:10px;}
 .punchout-at:hover .btn {border: 1px solid #ef6777;background:none;color:#ef6777;}
-.timecount {background: #eff3f8;color: #6c757d;border-radius: 3px;padding: 1px;text-align: center;font-size: 30px;border: 1px solid #ccc;}
+.timecount {background: #eff3f8;color: hsl(208, 7%, 46%);border-radius: 3px;padding: 1px;text-align: center;font-size: 30px;border: 1px solid #ccc;}
 
 .atd-table1 {margin-top:25px;}
 .atd-table1 .table-responsive {}
@@ -406,6 +406,26 @@ nav ul li ul li a:hover {
 :host {
   background-color: #f3f3f3c4;
 }
+
+.logout-page .mat-form-field-appearance-fill .mat-form-field-flex {
+  border-radius: 4px 4px 0 0;
+  padding: 0.25em 0.25em 0 0.75em;
+}
+
+.logout-page .calendar {
+  display: flex;
+  align-items: center;
+}
+
+.logout-page .note-head {
+  margin-top: 10px;
+}
+
+.logout-page .note-head h4 {
+  text-align: left;
+  margin-left: 17%;
+}
+
 
 
 

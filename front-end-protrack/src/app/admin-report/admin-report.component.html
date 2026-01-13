@@ -48,21 +48,19 @@
 <br>
 </div>
 
-
-
-
 <div class="container"  *ngIf="viewReport">
 
+  <h1>Weekly Task Report</h1>
     <mat-card class="fixed-height-card">
-        <mat-card-header>
+        <!-- <mat-card-header>
           <mat-card-title>Weekly Task Report</mat-card-title>
-        </mat-card-header>
+        </mat-card-header> -->
         <mat-card-content>
 
     <div class="table-responsive">
-        <div class="col">
+        <!-- <div class="col">
             <button class="btn btn-secondary" (click)="exportToExcel()">Export Report</button>
-          </div>
+          </div> -->
           <br>
           <br>
 
@@ -90,9 +88,9 @@
             </tbody>
         </table>
     </div>
-    <div class="col">
+    <!-- <div class="col">
         <button class="btn btn-secondary" (click)="exportToExcel()">Export Report</button>
-      </div>
+      </div> -->
         
     </div>
 
@@ -101,18 +99,66 @@
 </mat-card-actions>
 </mat-card>
     <br>
- 
     <br>
-
+    <h1>Weekly Plan Report</h1>
     <mat-card class="fixed-height-card">
-        <mat-card-header>
+      <!-- <mat-card-header>
+        <mat-card-title>Weekly Plan Report</mat-card-title>
+      </mat-card-header> -->
+      <mat-card-content>
+
+  <div class="table-responsive">
+     <!-- <div class="col">
+          <button class="btn btn-secondary" (click)="exportToExcel3()">Export Report</button>
+        </div>
+        <br>-->
+        <br>
+
+        <div class="col">
+      <table class="table table-striped table-hover table-bordered">
+          <thead class="thead-dark">
+              <tr>
+                  <th>User Name</th>
+                  <th>Task</th>
+                  <th>Status</th>
+                  <th>Date</th>
+              </tr> 
+          </thead>
+          <tbody>
+              <tr *ngFor="let input of plan; let i = index">
+                  <td>{{input.username}}</td>
+                  <td>{{input.task_description}}</td>
+                  <td>{{input.status}}</td>
+                  <td>{{input.year_week | nextWeekDateRange}}</td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+  <!--<div class="col">
+      <button class="btn btn-secondary" (click)="exportToExcel3()">Export Report</button>
+    </div>-->
+      
+  </div>
+
+
+
+</mat-card-content>
+<mat-card-actions>
+</mat-card-actions>
+</mat-card>
+<br>
+<br>
+
+<h1>Weekly Ratings</h1>
+    <mat-card class="fixed-height-card">
+        <!-- <mat-card-header>
           <mat-card-title>Weekly Ratings</mat-card-title>
-        </mat-card-header>
+        </mat-card-header> -->
         <mat-card-content>
     <div class="table-responsive">
-        <div class="col">
+        <!-- <div class="col">
             <button class="btn btn-secondary" (click)="exportToExcel2()">Export Report</button>
-          </div>
+          </div> -->
           <br>
           <br>
         
@@ -142,15 +188,30 @@
                 </tr>
             </tbody>
         </table>
-        <div class="col">
+        <!-- <div class="col">
             <button class="btn btn-secondary" (click)="exportToExcel2()">Export Report</button>
-          </div>
+          </div> -->
     </div>
 </mat-card-content>
 <mat-card-actions>
 </mat-card-actions>
+<!-- <mat-card-actions>
+  <div class="col">
+    <button class="btn btn-secondary" (click)="exportToExcel()">Export Report</button>
+  </div>
+</mat-card-actions> -->
 </mat-card>
+
 </div>
+
+<br>
+<br>
+
+<mat-card-actions>
+  <div class="col" *ngIf="dataFetchedSuccessfully">
+    <button class="btn btn-secondary" (click)="exportToExcel()">Export Report</button>
+  </div>
+</mat-card-actions>
 
 
 <!-- <div class="container" >

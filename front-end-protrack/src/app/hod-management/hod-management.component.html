@@ -1,0 +1,74 @@
+<div class="container mt-4">
+    <button mat-raised-button color="primary" (click)="openCreateDialog()">Create Department</button>
+  
+    <table mat-table [dataSource]="departments" class="mat-elevation-z8">
+      <ng-container matColumnDef="department_name">
+        <th mat-header-cell *matHeaderCellDef> Department </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field *ngIf="editIndex === element.department_id">
+            <input matInput [(ngModel)]="element.department_name">
+          </mat-form-field>
+          <span *ngIf="editIndex !== element.department_id">{{ element.department_name }}</span>
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="hod">
+        <th mat-header-cell *matHeaderCellDef> HoD </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-form-field *ngIf="editIndex === element.department_id">
+            <mat-select [(ngModel)]="element.hod_id" name="Hod" [ngModelOptions]="{standalone: true}">
+              <mat-option *ngFor="let employee of employees" [value]="employee.id">
+                {{ employee.first_name }} {{ employee.last_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <span *ngIf="editIndex !== element.department_id">{{ element.hod_firstname }} {{ element.hod_lastname }}</span>
+        </td>
+      </ng-container>
+  
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" (click)="edit(element)" *ngIf="editIndex !== element.department_id">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="accent" (click)="save(element)" *ngIf="editIndex === element.department_id">
+            <mat-icon>save</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteHod(element.department_id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+        
+      </ng-container>
+  
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div *ngIf="isDepartmentPopupOpen" class="popup-overlay">
+      <div class="popup-content">
+        <h3 mat-dialog-title>Create New Department</h3>
+    
+        <form (ngSubmit)="createDepartment()" #newDepartmentForm="ngForm">
+          
+          <!-- Add the name attribute here -->
+          <mat-form-field>
+            <input matInput placeholder="Department Name" [(ngModel)]="departmentName" name="departmentName" required>
+          </mat-form-field>
+          
+          <mat-form-field>
+            <mat-select placeholder="Select HoD" [(ngModel)]="hodId" name="hodId" required>
+              <mat-option *ngFor="let employee of employees" [value]="employee.id">
+                {{ employee.first_name }} {{ employee.last_name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+            <button type="submit" [disabled]="!newDepartmentForm.valid">Submit</button>
+            <button type="button" (click)="closeDepartmentPopup()">Cancel</button>
+        </form>
+      </div>
+    </div>
+    
+  </div>
+  

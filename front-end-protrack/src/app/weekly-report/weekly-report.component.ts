@@ -5,6 +5,7 @@ import  * as moment from 'moment';
 import { WeeklyRatingsService } from '../services/work-report-services/weekly-ratings.service';
 import {DisplayPlanService} from '../services/work-report-services/display-week-plan.service';
 import { SharedService } from '../shared.service';
+import { ToastrService } from 'ngx-toastr';
 
 interface InputItem{ 
   task: string;
@@ -30,7 +31,8 @@ export class WeeklyReportComponent implements OnInit {
               private createWeekReport: CreateWeekReportService,
               private planService: DisplayPlanService,
               private weeklyRating: WeeklyRatingsService,
-              private sharedService: SharedService ) { 
+              private sharedService: SharedService,
+              private toastr: ToastrService ) { 
                 this.ratings = {
                   busyness: null,
                   satisfaction: null,
@@ -84,14 +86,13 @@ export class WeeklyReportComponent implements OnInit {
     }
       
           currentDate = moment()
-          year_week:number=parseInt(this.currentDate.format("YYYYWW"));
+          year_week:any=parseInt(this.currentDate.format("YYYYWW"));
 
         isValidInput(){
     
         }
 
   ngOnInit(): void {
-
     //this.createWeekReport.createWeekReport(this.inputs);
     this.selectedOption = 'current_week';
     this.fetchActivities();
@@ -150,7 +151,8 @@ export class WeeklyReportComponent implements OnInit {
     }
     else
     {
-      alert("You can only add upto 25 Tasks");
+   
+      this.toastr.warning("You can only add upto 25 Tasks");
     }
 
   }
@@ -159,7 +161,7 @@ export class WeeklyReportComponent implements OnInit {
     //if input is 1, do not delete
     if(this.inputs.length == 1)
     {
-      alert("You must have at least 1 input");
+      this.toastr.warning("You must have at least 1 input",);
       return;
     }
     this.inputs.splice(index, 1);
@@ -176,27 +178,44 @@ export class WeeklyReportComponent implements OnInit {
       // if(!Dropdown)
       //  please select the week.
       if(!this.selectedOption){
-       alert('Please select the week');
+       this.toastr.warning('Please select the week');
         return[]
       }
   
       // if(!Dropdown== last_week)
       // year_week-=1;
-      if(this.selectedOption === 'last_week')
-      {
-        this.year_week = parseInt(this.currentDate.format("YYYYWW")) - 1;
-        alert('Last Week Selected ' + this.year_week)
+      // if(this.selectedOption === 'last_week')
+      // {
+      //   this.year_week = parseInt(this.currentDate.format("YYYYWW")) - 1;
+      //   console.log('Last Week Selected ' + this.year_week);
+      //   this.toastr.info('Last Week Selected ');
   
+      // }
+
+      if (this.selectedOption === 'last_week') {
+
+        let previousWeek= this.getPreviousWeek();
+        const endDate = new Date(previousWeek.endDate);
+        const year = endDate.getFullYear();
+        const week = this.getWeekNumber(endDate);
+
+        const formattedWeek = week.toString().padStart(2, '0');
+        this.year_week = `${year}${formattedWeek}`;
+        console.log('Previous Week Selected: ' + this.year_week);
+        this.toastr.info('Previous Week Selected');
+
       }
+    
   
       if(this.selectedOption === 'current_week')
       {
          this.year_week=parseInt(this.currentDate.format("YYYYWW"));
-        alert('Current Week Selected ' + this.year_week)
+        console.log('Current Week Selected ' + this.year_week)
+        this.toastr.info('Current Week Selected ');
       }
      
       this.sharedService.setYearWeek(this.year_week);
-    this.fetchTaskService.fetchActivities(this.year_week).subscribe((data:string[])=>{
+      this.fetchTaskService.fetchActivities(this.year_week).subscribe((data:string[])=>{
         this.activities=  data;
         console.log(this.activities);
     },
@@ -208,19 +227,43 @@ export class WeeklyReportComponent implements OnInit {
 
     return []
   }
+
+  getWeekNumber(date: Date): number {
+    const startOfYear = new Date(date.getFullYear(), 0, 1);
+    const days = Math.floor((date.valueOf() - startOfYear.valueOf()) / 86400000);
+    return Math.ceil((days + 1) / 7);
+  }
+  
+  getPreviousWeek(): { startDate: string; endDate: string } {
+    const now = new Date();
+    const currentDay = now.getDay();
+    const diffToLastMonday = currentDay === 0 ? 7 : currentDay + 6;
+    const startOfPrevWeek = new Date(now);
+    startOfPrevWeek.setDate(now.getDate() - diffToLastMonday);
+    const endOfPrevWeek = new Date(startOfPrevWeek);
+    endOfPrevWeek.setDate(startOfPrevWeek.getDate() + 6);
+    const formatDate = (date: Date) =>
+      date.toISOString().split('T')[0];
+
+    return {
+      startDate: formatDate(startOfPrevWeek),
+      endDate: formatDate(endOfPrevWeek),
+    };
+  }
+
  
   /**saveInputTasks(){
 
     this.createWeekReport.createWeekReport(this.inputs).subscribe((response)=>{
 
       console.log("request submitted successfully");
-      alert(JSON.stringify(response.body))
+  
       
 
     },(err)=>{
       console.log("An error occured")
       console.log(err);
-      alert(err.message)
+      
     });
     console.log(this.inputs);
 
@@ -252,12 +295,13 @@ export class WeeklyReportComponent implements OnInit {
     this.createWeekReport.createWeekReport(this.inputs, this.year_week).subscribe(
       (response) => {
         console.log("Request submitted successfully");
-        alert(JSON.stringify(response.body));
+        this.toastr.success(JSON.stringify(response.body));
       },
       (err) => {
         console.log("An error occurred");
+        let errorMessage = err.error.message || "An unknown error occurred.";
         console.log(err);
-        alert(err.message);
+        this.toastr.error(errorMessage);
       });
     console.log(this.inputs);
   }
@@ -271,42 +315,45 @@ export class WeeklyReportComponent implements OnInit {
         
         if(this.ratings.busyness === null)
         {
-        alert("Busyness is required");
+        this.toastr.warning("Busyness is mandatory field");
         return
         }
         if(this.ratings.satisfaction === null)
         {
-        alert("satisfaction is required")
+        this.toastr.warning("satisfaction is mandatory field")
         return
         }
         if(this.ratings.learning === null)
         {
-        alert("learning is required")
+        this.toastr.warning("learning is mandatory field")
         return
         }
         if(this.ratings.core === null )
         {
-        alert("core is required")
+        this.toastr.warning("core is mandatory field")
         return
         }
         
   
         if(this.ratings.skill_acquired === '')
         {
-        alert("skills is required")
+       
+        this.toastr.warning('Skill Acquired in mandatory field');
         return
         }
 
         this.weeklyRating.createWeeklyRatings(JSON.stringify(this.ratings),this.year_week).subscribe((response)=>{
 
           console.log(response);
-          alert("Weekly Ratings have been saved");
+      
+          this.toastr.success('Weekly Ratings have been saved');
         },(err)=>{
           
           console.log(err)
 
+          let message = err.error.message || "An unknown error occurred.";
+          this.toastr.info(`${message}`);
 
-          alert("An error occured while saving the ratings due to error "+ JSON.stringify(err.status))
         })
 
         
@@ -321,7 +368,6 @@ export class WeeklyReportComponent implements OnInit {
       (response) =>{
 
         this.taskDescriptionsPerRow[i] = response.task_description;
-
         console.log(this.taskDescriptionsPerRow);
 
 

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FetchReportDataService } from '../services/work-report-services/fetch-report-data.service';
 import * as moment from 'moment';
+import { ToastrService } from 'ngx-toastr';
+
+
 @Component({
   selector: 'app-view-week-report',
   templateUrl: './view-week-report.component.html',
@@ -17,7 +20,8 @@ export class ViewWeekReportComponent implements OnInit {
     skillAcquired:    "",
     aiProductivity:10}
 
-  constructor(private fetchReportData: FetchReportDataService) { }
+  constructor(private fetchReportData: FetchReportDataService,
+              private toastr: ToastrService) { }
 
    currentDate = moment();
    year_week = parseInt(this.currentDate.format('YYYYWW'));
@@ -32,7 +36,9 @@ export class ViewWeekReportComponent implements OnInit {
 
     },(error) =>{
       console.log(error.details);
-      alert("Report Data could not be fetched\n"+ JSON.stringify(error.details) );
+      let errorMessage = error.error.message || "An unknown error occurred.";
+      this.toastr.error(`${errorMessage}`);
+      this.toastr.error("Report Data could not be fetched\n");
     })
 
   }

@@ -15,6 +15,7 @@ import { CreateWeekPlanService } from '../services/work-report-services/create-w
 import { environment } from 'src/environments/environment';
 import { SharedService } from 'src/app/shared.service';
 
+
 export interface StateGroup {
   letter: string;
   names: string[];
@@ -41,10 +42,7 @@ export class WeeklyPlanComponent implements OnInit {
   
 
   searchInput: string;
-
   stateCtrl = new FormControl();
-
-  
   filteredActivities: Observable<string[]>;
 
 
@@ -57,7 +55,9 @@ stateForm = this._formBuilder.group({
   activtiyForm = this._formBuilder.group({
     ProjectActivity: '',
   });
-  
+
+  newInput2:any=[];
+
   onActivitySearch(index: number, event: any) {
     const userInput = event.target.value;
     this.stateGroups.forEach((group) => {
@@ -70,17 +70,12 @@ stateForm = this._formBuilder.group({
     );
   }
   
-  
-  
-  
   stateGroups: StateGroup[] = [];
-  
-  
   stateGroupOptions: Observable<StateGroup[]>;
   
     // inputs: { activity: string,description: string,status: string }[] = [{ activity: '',description: '',status:'incomplete' }];
-    inputs: { activity: string, description: string, status: string }[] = [
-      { activity: '', description: '', status: 'Planned' }
+    inputs: { activity: string, description: string, status: string ,due_date: string}[] = [
+      { activity: '', description: '', status: 'Planned' , due_date:''}
     ];
   
     activityName: string[] = [];
@@ -94,7 +89,14 @@ stateForm = this._formBuilder.group({
    searchText = '';
  
 
-  constructor(private _formBuilder: FormBuilder,private http: HttpClient,private router: Router,private toastr: ToastrService,private elementRef: ElementRef, private createWeekPlanService: CreateWeekPlanService, private sharedDataService: SharedService) {}
+  constructor(private _formBuilder: FormBuilder,
+              private http: HttpClient,
+              private router: Router,
+              private toastr: ToastrService,
+              private elementRef: ElementRef,
+              private createWeekPlanService: CreateWeekPlanService,
+              private sharedDataService: SharedService,) {
+  }
 
   ngOnInit() {
     
@@ -105,7 +107,6 @@ stateForm = this._formBuilder.group({
       names: project.activities.map(activity => activity.activity_name)
     }));
    
-
     this.stateGroupOptions = this.stateForm.get('stateGroup')!.valueChanges
    .pipe(
     startWith(''),
@@ -117,11 +118,6 @@ this.filteredActivities = this.stateCtrl.valueChanges
     startWith(''),
     map(value => this._filter(value))
   );
-
-
-
-
-  
 
   this.http.get<any>(`${environment.API_BASE_URL}/api/dropdown_options2`).subscribe(data => {
     this.projects = data.projects;
@@ -149,9 +145,24 @@ private _filterGroup(value: string): StateGroup[] {
 }
 addInput() {
   console.log('Before adding:', this.inputs);
-  const newInput = { activity: 'Default Activity', description: '', status: 'Planned' };
+
+  const [last]  = this.inputs.slice(-1);
+
+  let newInput:any = { activity: last.activity, description: '', status: 'Planned' , due_date:''};
+  console.log(newInput);
+
+  
+  //this.newInput2.push(this.inputs[0]);
+  
+  // this.newInput2.push(newInput);
+  // console.log(this.newInput2);
   this.inputs.push(newInput);
+  // this.stateForm.reset();
+  //this.stateForm.get('stateGroup').setValue('Default Activity');
+
   console.log('After adding:', this.inputs);
+
+  
 //   // Bind the new input object to the template
 //   const inputElement = this.elementRef.nativeElement.querySelector(`[name="input-${this.inputs.length - 1}"]`);
 //   inputElement.focus();
@@ -161,7 +172,7 @@ deleteInput(index: number){
   //if input is 1, do not delete
   if(this.inputs.length == 1)
   {
-    alert("You must have at least 1 input");
+    this.toastr.warning("You must have at least 1 input");
     return;
   }
   this.inputs.splice(index, 1);
@@ -179,10 +190,41 @@ onInputChange(index: number, field: string, event: any) {
   // Handle input changes if needed
 }
 
-isValidInput(): boolean {
+isValidInput(index: number): boolean {
   // Implement validation logic if needed
-  return true;
+  const input = this.inputs[index];
+  return input && input.activity.trim() !== '' && input.description.trim() !== '' && input.status.trim() !== '' && input.due_date.trim() !== '';
+
 }
+
+areAllInputsValid(): boolean {
+  return this.inputs.every(input => 
+    input.activity && input.activity.trim() !== '' &&
+    input.description && input.description.trim() !== '' &&
+    input.status && input.status.trim() !== '' &&
+    input.due_date && input.due_date.trim() !== '');
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 savePlanTasks(){
@@ -191,18 +233,19 @@ savePlanTasks(){
   this.createWeekPlanService.createWeekPlan(this.inputs,year_week).subscribe((response)=>{
 
     console.log("request submitted successfully");
-    alert(JSON.stringify(response.body))
+    this.toastr.success('Plan Submitted Successfully');
+  
     
 
   },(err)=>{
+    let errorMessage = err.error.message || "An unknown error occurred.";
     console.log("An error occured")
     console.log(err);
-    alert(err.message)
+    this.toastr.error(`Error : ${errorMessage}`);
   });
   console.log(this.inputs);
 
  
   
 }
-
 }

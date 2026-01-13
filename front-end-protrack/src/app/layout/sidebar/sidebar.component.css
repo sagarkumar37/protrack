@@ -1,0 +1,107 @@
+.sidemenu-area {
+    position: fixed;background:#23384e;
+    left: 0;
+    top: 0;
+	height: 100%;
+    width: 250px;
+    z-index: 9999;
+    transition: 0.5s;
+	/* min-height: calc(100vh); */
+}
+
+.app {}
+.app-menu {}
+.app-menu .logo {padding:15px;text-align:left;border-bottom: 1px solid #2e455c;}
+.left-menu {margin-top:30px;}
+nav {
+	width: 100%;
+	position: relative;
+}
+
+.sidebar-scroll {
+	height: calc(100vh - 169px);
+	overflow-y: scroll;
+	margin-right: 5px;
+	overflow-x: hidden;}
+  .sidebar-scroll::-webkit-scrollbar {
+	  width: 5px; 
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-track {
+	  background:#CFCFCF;border-radius:10px;
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+	background-color: #878A99;border-radius:10px;
+  }
+nav ul {list-style: none;margin: 0;padding: 0;}
+nav ul li {
+  
+  /* Sub Menu */
+}
+nav ul li a {
+	display: block;
+	background: #23384e;
+	padding: 10px 15px;
+	color: #fff;
+	text-decoration: none;
+	-webkit-transition: 0.2s linear;
+	-moz-transition: 0.2s linear;
+	-ms-transition: 0.2s linear;
+	-o-transition: 0.2s linear;
+	transition: 0.2s linear;
+}
+nav ul li a svg {width:18px; height:18px;margin-right:10px;}
+
+nav ul li a:hover {
+	/* background: #579eff; */
+	color: #fff;
+  background: #0c1a28;
+	border-left: 4px solid #579eff;
+}
+nav ul li a .fa {
+	width: 16px;
+	text-align: center;
+	margin-right: 5px;
+	float:right;
+}
+nav ul ul {
+	background-color:#152536;
+}
+nav ul li ul li a {
+	background: #152536;
+	border-left: 4px solid transparent;
+	padding: 10px 20px;
+}
+nav ul li ul li a:hover {
+	background: #0c1a28;
+	border-left: 4px solid #579eff;
+}
+
+nav ul li ul li a.active {
+	background: #579eff;
+	border-left: 4px solid #579eff;
+}
+
+
+  .left-menu ul li a.active {
+    background: #579eff;
+    color: #fff;       
+    /* font-weight: bold; */
+}
+
+  
+
+.sub-menu-items {
+    height: 0;
+    transition: height 100ms ease;
+	overflow-y: auto;
+	overflow-x: hidden;
+  }
+  
+  .sub-menu-items.shown {
+    height: auto;
+  }
+  .sub-menu-items.shown1{
+    height: auto;
+  }

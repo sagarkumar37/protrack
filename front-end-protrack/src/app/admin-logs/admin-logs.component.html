@@ -1,0 +1,49 @@
+<br>
+<div class="container">
+    <div class="container">
+        <div class="row">
+            <div class="row">
+                <!-- From Date selector input -->
+                <div class="col">
+                  <mat-form-field class="custom-mat-form-field" >
+                    <mat-label>Select Date</mat-label>
+                    <input matInput type="date" class="form-control" placeholder="From Date" [(ngModel)]="selectDate"/>
+                  </mat-form-field>
+                </div>
+              
+                
+              <div class="col">
+                <button class="btn btn-primary" (click)="fetchReport()">Fetch Report</button>
+              </div>
+        <br>
+      </div>
+      
+
+<br>
+</div>
+
+
+<div class="container"  *ngIf="viewReport">
+   
+
+      <table>
+    <thead>
+      <tr>
+        <th>Employee Full Name</th>
+        <!-- <th>Employee Code</th> -->
+        <th>Punch In</th>
+        <th>Punch Out</th>
+        <th>Hours Worked</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let record of timeTrackingRecords">
+        <!-- <td>{{ record.employeeFullName }}</td> -->
+        <td>{{ record.empcode.full_name }}</td>
+        <td>{{ record.start_time }}</td>
+        <td>{{ record.end_time }}</td>
+        <td>{{ record.hours }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

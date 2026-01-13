@@ -1,0 +1,107 @@
+<div class="apply-leave-container">
+    <!-- <h2>Requested Leaves</h2> -->
+    <div *ngIf="isLoading" class="loader-container">
+        <mat-spinner color="primary"></mat-spinner>
+    </div>
+    <div *ngIf="!isLoading && !isData && !isLeavePopupOpen" class="message-container">
+        <img src="../../assets/img/smile.png" width="65" height="65" alt="No Data">
+        <span class="no-data-message">No leave requested!</span>
+    </div>
+
+    <table *ngIf="isData && appliedLeaves && !isLeavePopupOpen" mat-table [dataSource]="appliedLeaves" class="leave-table mat-elevation-z8">
+        <ng-container matColumnDef="from_date">
+          <th mat-header-cell *matHeaderCellDef>From Date</th>
+          <td mat-cell *matCellDef="let record">{{ record.from_date || '-' }}</td>
+        </ng-container>
+    
+        <ng-container matColumnDef="to_date">
+          <th mat-header-cell *matHeaderCellDef>To Date</th>
+          <td mat-cell *matCellDef="let record">{{ record.to_date || '-' }}</td>
+        </ng-container>
+    
+        <ng-container matColumnDef="leave_type">
+          <th mat-header-cell *matHeaderCellDef>Leave Type</th>
+          <td mat-cell *matCellDef="let record">{{ record.leaveType.leave_type_name }}</td>
+        </ng-container>
+    
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let record">{{ record.status }}</td>
+        </ng-container>
+    
+        <ng-container matColumnDef="reason">
+          <th mat-header-cell *matHeaderCellDef>Reason</th>
+          <td mat-cell *matCellDef="let record">{{ record.reason || 'NA' }}</td>
+        </ng-container>
+    
+        <ng-container matColumnDef="request_date">
+          <th mat-header-cell *matHeaderCellDef>Request Date</th>
+          <td mat-cell *matCellDef="let record"> {{ record.request_date ? (record.request_date | date: 'yyyy-MM-dd') : 'NA'
+            }}</td>
+        </ng-container>
+    
+        <ng-container matColumnDef="hod_email">
+          <th mat-header-cell *matHeaderCellDef>Hod Email</th>
+          <td mat-cell *matCellDef="let record">{{ record.hod_email || 'NA' }}</td>
+        </ng-container>
+    
+        <ng-container matColumnDef="hod_comments">
+          <th mat-header-cell *matHeaderCellDef>Hod Comments</th>
+          <td mat-cell *matCellDef="let record">{{ record.hod_comments || 'NA' }}</td>
+        </ng-container>
+    
+        <ng-container matColumnDef="added_by_admin">
+          <th mat-header-cell *matHeaderCellDef>By Admin</th>
+          <td mat-cell *matCellDef="let record">{{ record.added_by_admin ? 'Yes' : 'NA' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="emp_emailId">
+            <th mat-header-cell *matHeaderCellDef>Employee Email</th>
+            <td mat-cell *matCellDef="let record">{{ record.emp_email || 'NA' }}</td>
+          </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let record">
+              <button mat-icon-button (click)="openLeavePopup(record)">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+    <!-- <mat-paginator *ngIf="isData" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator> -->
+
+
+    <div *ngIf="isLeavePopupOpen" class="popup-overlay">
+        <div class="popup-container">
+          <button class="close-btn" (click)="closePopup()">&times;</button>
+          <h2>Leave Details</h2>
+          <p *ngIf="isLeaveStatus">This leave request has already been {{ isLeaveStatus }}.</p>
+      
+          <div class="request-info" *ngIf="!isLeaveStatus">
+            <p><strong>Employee ID:</strong> {{ leaveDetails?.employee_id }}</p>
+            <p><strong>Employee Email:</strong> {{ leaveDetails?.emp_email}}</p>
+            <p><strong>From Date:</strong> {{ leaveDetails?.from_date }}</p>
+            <p><strong>To Date:</strong> {{ leaveDetails?.to_date }}</p>
+            <p><strong>Leave Type:</strong> {{ leaveDetails?.leave_type_name || 'Unnamed Leave' }}</p>
+            <p><strong>Total Leave Days:</strong> {{ leaveDetails?.leave_days || 'NA' }}</p>
+            <p class="reason-text"><strong>Reason:</strong> {{ leaveDetails?.reason ? leaveDetails?.reason : "Reason not available" }}</p>
+          </div>
+      
+          <div class="feedback" *ngIf="!isLeaveStatus">
+            <textarea id="reason" rows="2" maxlength="100" [(ngModel)]="hodComment" name="reason"
+              #reasonInput="ngModel" aria-label="Feedback"></textarea>
+            <span class="char-count">{{ hodComment?.length || 0 }}/100 characters</span>
+          </div>
+      
+          <div class="action-buttons" *ngIf="!isLeaveStatus">
+            <button mat-button color="primary" (click)="submitDecision('Approved')">Approve</button>
+            <button mat-button color="warn" (click)="submitDecision('Rejected')">Reject</button>
+          </div>
+        </div>
+      </div>
+      

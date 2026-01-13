@@ -1,0 +1,67 @@
+/* src/app/components/holiday-management/holiday-management.component.css */
+
+/* General container styling */
+.holiday-management {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Header styling */
+  h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  /* Form fields styling */
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  /* Button styling */
+  button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  button[mat-raised-button] {
+    background-color: #1976d2;
+    color: #fff;
+  }
+  
+  button[mat-raised-button]:hover {
+    background-color: #1565c0;
+  }
+  
+  /* List styling */
+  mat-list-item {
+    padding: 12px 0;
+    font-size: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  mat-list-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .holiday-management {
+      padding: 10px;
+    }
+  
+    button[type="submit"] {
+      font-size: 14px;
+    }
+  
+    mat-list-item {
+      font-size: 14px;
+    }
+  }
+  

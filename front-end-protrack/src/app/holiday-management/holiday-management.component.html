@@ -1,0 +1,22 @@
+<div class="holiday-management">
+    <h3>Add New Holiday</h3>
+    <form (ngSubmit)="addHoliday()" #holidayForm="ngForm" >
+      <mat-form-field>
+        <input matInput placeholder="Holiday Name" [(ngModel)]="holidayName" name="holidayName" required />
+      </mat-form-field>
+  
+      <mat-form-field>
+        <input matInput (click)="picker.open()" [matDatepicker]="picker" placeholder="Select Date" [(ngModel)]="holidayDate" name="holidayDate" required />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" [disabled]="!holidayForm.valid" type="submit">Add Holiday</button>
+    </form>
+  
+    <h3 class="mt-3">Holiday List</h3>
+    <mat-list>
+      <mat-list-item *ngFor="let holiday of holidays">{{ holiday.name }} - {{ holiday.date | date }}</mat-list-item>
+    </mat-list>
+  </div>
+  

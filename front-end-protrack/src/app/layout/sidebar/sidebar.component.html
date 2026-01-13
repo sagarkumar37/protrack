@@ -1,0 +1,107 @@
+<div class="sidemenu-area">
+    <div class="app-menu">
+        <div class="logo"><img src="assets/img/logo.png" height="75px" width="220px"></div>
+        <div class="left-menu">
+            <nav class='animated bounceInDown sidebar-scroll'>
+                <ul>
+                    <li>
+                        <a routerLink="/main/dashboard" routerLinkActive="active">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-grid">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/main/attendance" routerLinkActive="active">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-clipboard">
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2">
+                                </path>
+                                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                            </svg>
+                            Attendance
+                        </a>
+                    </li>
+                    <li>
+                        <a routerLink="/main/timesheet" routerLinkActive="active"><svg width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg> Timesheet</a></li>
+                    <li><a routerLink="/main/attendance-log" routerLinkActive="active">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class=""><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M7 14h.013" /><path d="M10.01 14h.005" /><path d="M13.01 14h.005" /><path d="M16.015 14h.005" /><path d="M13.015 17h.005" /><path d="M7.01 17h.005" /><path d="M10.01 17h.005" /></svg>
+                            Attendance Log</a></li>
+                    <li *ngIf="isHod"><a routerLink="/main/regularized-requested" routerLinkActive="active">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="">
+                            <path d="M20.942 13.021a9 9 0 1 0 -9.407 7.967" /><path d="M12 7v5l3 3" /><path d="M15 19l2 2l4 -4" />
+                        </svg>
+                            Regularization Request </a></li>
+                    <li *ngIf="admin_report"><a routerLink="/main/admin-management" routerLinkActive="active"> 
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class=""><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h2.5" /><path d="M19.001 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M19.001 15.5v1.5" /><path d="M19.001 21v1.5" /><path d="M22.032 17.25l-1.299 .75" /><path d="M17.27 20l-1.3 .75" /><path d="M15.97 17.25l1.3 .75" /><path d="M20.733 20l1.3 .75" /></svg>
+                            Admin Management </a></li>
+                    <li><a routerLink="/main/apply-leave" routerLinkActive="active">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class=""><path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v6" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M15 19l2 2l4 -4" /></svg>
+                             Apply Leave </a></li>
+                    <li *ngIf="isHod"><a routerLink="/main/leave-requested" routerLinkActive="active">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-smile"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12zm12 -4v4m-8 -4v4m-4 4h16m-9.995 3h.01m3.99 0h.01" /><path d="M10.005 17a3.5 3.5 0 0 0 4 0" /></svg>
+                            Leave Requested </a></li>
+                    <li class='sub-menu'>
+                        <a href="javascript:void(0)" (click)="toggleSubMenu1()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="feather feather-pie-chart">
+                                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                                <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+                            </svg>Reports
+                            <div class='fa fa-angle-down right'></div>
+                        </a>
+
+                        <ul [ngClass]="{'shown': isShown1, 'sub-menu-items': true}">
+                            <li><a routerLink="/main/timesheet-report" routerLinkActive="active">Timesheet
+                                    Report</a></li>
+                            <li><a routerLink="/main/weekly-report" routerLinkActive="active">Create Weekly
+                                    Report</a>
+                            </li>
+                            <li><a routerLink="/main/view-week-report" routerLinkActive="active">View Weekly
+                                    Report</a></li>
+                            <!-- <li *ngIf="admin_report"><a (click)="selectView('admin_report')">Admin Report</a></li> -->
+                            <!-- <li><a>Attendance Details</a></li>
+                  <li><a>Hours Tracked</a></li> -->
+
+                            <!-- <li><a href="javascript:void(0)" (click)="selectView('employee_logs')">Employee Logs</a></li> -->
+                            <li><a routerLink="/main/my-report" routerLinkActive="active"> My Report </a> </li>
+                            <li><a routerLink="/main/global-report" routerLinkActive="active"> Global Report </a>
+                            </li>
+                        </ul>
+                    </li>
+
+
+                    <!-- <li class='sub-menu'>
+          
+                <a (click)="toggleSubMenu()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-folder"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                  Projects<div class='fa fa-angle-down right'></div></a>
+                <ul [ngClass]="{'shown': isShown, 'sub-menu-items': true}">
+                    <li><a >Project List</a></li>
+                 
+                    <li><a>Task Progress</a></li>
+                   
+                </ul>
+                
+            </li> -->
+
+
+                    <!-- <li><a><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Team</a></li> -->
+                </ul>
+            </nav>
+        </div>
+
+    </div>
+</div>

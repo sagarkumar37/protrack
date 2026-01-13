@@ -1,0 +1,26 @@
+.iframeheight{
+    height: 78vh !important;
+}
+  
+.queryRefresh{
+    margin-bottom: 15px;
+}
+.queryRefresh .btn{ 
+    background:#f1f1f1;
+    border:1px solid #ccc; 
+    margin-right:10px
+}
+
+.loader-container{
+    display: inline-block;
+}
+
+.loader_color{
+    filter: grayscale(100%);
+    color: gray;
+    opacity: 0.5;
+}
+
+.loader-container img { 
+    width: 50px }
+

@@ -11,9 +11,6 @@ export interface PeriodicElement {
   date: string;
   punchIn: string;
   punchOut: string;
-  proj1: string;
-  proj2: string;
-  proj3: string;
 }
 
 @Component({
@@ -23,7 +20,7 @@ export interface PeriodicElement {
 })
 export class TableComponent implements OnInit {
   TimeEntries: any = [];
-  displayedColumns: string[] = ['position', 'date', 'punchIn', 'punchOut', 'proj1', 'proj2', 'proj3'];
+  displayedColumns: string[] = ['position', 'date', 'punchIn', 'punchOut'];
   dataSource = new MatTableDataSource<PeriodicElement>();
 
   constructor(private http: HttpClient) {}
@@ -52,13 +49,9 @@ export class TableComponent implements OnInit {
         position: index + 1,
         date: item.Date,
         punchIn: item['Punch In'],
-        punchOut: item['Punch Out'],
-        proj1: item['Project 1'],
-        proj2: item['Project 2'],
-        proj3: item['Project 3'],
-      }));
-      // this.dataSource = new MatTableDataSource<PeriodicElement>(this.dataSource.data);
+        punchOut: item['Punch Out']
 
+      }));
       console.log(this.dataSource.data);
     });
   }
@@ -84,28 +77,13 @@ export class TableComponent implements OnInit {
       header: 'Punch Out',
       cell: (element: PeriodicElement) => `${element.punchOut}`,
     },
-    {
-      columnDef: 'proj1',
-      header: 'Project 1.',
-      cell: (element: PeriodicElement) => `${element.proj1}`,
-    },
-    {
-      columnDef: 'proj2',
-      header: 'Project 2.',
-      cell: (element: PeriodicElement) => `${element.proj2}`,
-    },
-    {
-      columnDef: 'proj3',
-      header: 'Project 3.',
-      cell: (element: PeriodicElement) => `${element.proj3}`,
-    }
   ];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngAfterViewInit(): void {
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 }

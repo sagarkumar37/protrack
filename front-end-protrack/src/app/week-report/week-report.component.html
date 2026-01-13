@@ -1,8 +1,6 @@
-
  <br>
 <!-- <div class="container"> -->
-    
-        <div class="row">
+            <div class="row">
             <div class="col-md-6">
                
                 
@@ -15,35 +13,8 @@
                     <span>&#9655;</span>
                   </button>
                 </div>
-              
-                <!-- <div class="col"> -->
-                  <!-- <mat-form-field class="custom-mat-form-field"> 
-                    <mat-label>End Date</mat-label>
-                    <input matInput type="date" class="form-control" placeholder="To Date" [(ngModel)]="endDate"/>
-                  </mat-form-field>
-                </div>-->
-              
-           
-                <!-- <div class="col">
-                  <mat-form-field class="custom-mat-form-field">
-                    <mat-label>Employees</mat-label>
-                    <mat-select [formControl]="selectedUsernames" multiple>
-                      <mat-select-trigger>
-                        {{selectedUsernames.value?.[0] || ''}}
-                        <span *ngIf="(selectedUsernames.value?.length || 0) > 1" class="example-additional-selection">
-                          (+{{(selectedUsernames.value?.length || 0) - 1}} {{selectedUsernames.value?.length === 2 ? 'other' : 'others'}})
-                        </span>
-                      </mat-select-trigger>
-                      <mat-option #selectAllOption value="selectAll" (click)="toggleSelectAll()">Select All</mat-option>
-                      <mat-option *ngFor="let username of usernames" [value]="username">{{username}}</mat-option>
-                    </mat-select>
-                  </mat-form-field>-->
+          
                 </div>
-              <!-- </div>  -->
-
-              <!-- <div class="col">
-                <button class="btn btn-primary" (click)="fetchReport()">Fetch Report</button>
-              </div> -->
         <br>
         <br>
         <div class="col-md-6">
@@ -88,6 +59,7 @@
                 <tr>
                     <!-- <th>User Name</th> -->
                     <th>Task</th>
+                    <th>Task Description</th>
                     <th>Status</th>
                     <th>Challenge</th>
                     <!-- <th>AI Tool</th> -->
@@ -97,6 +69,7 @@
             <tbody>
                 <tr *ngFor="let input of inputs; let i = index">
                     <!-- <td>{{input.username}}</td> -->
+                    <td>{{input.activity_name}}</td>
                     <td>{{input.task_description}}</td>
                     <td>{{input.status}}</td>
                     <td>{{input.challenge_description}}</td>
@@ -138,16 +111,20 @@
               <tr>
                   <th>User Name</th>
                   <th>Task</th>
+                  <th>Task Description</th>
                   <th>Status</th>
-                  <th>Date</th>
+                  <!-- <th>Date</th> -->
+                  <th>Due Date</th>
               </tr> 
           </thead>
           <tbody>
               <tr *ngFor="let input of plan; let i = index">
                   <td>{{input.username}}</td>
+                  <td>{{input.activity_name}}</td>
                   <td>{{input.task_description}}</td>
                   <td>{{input.status}}</td>
-                  <td>{{input.year_week | nextWeekDateRange}}</td>
+                  <!-- <td>{{input.year_week | nextWeekDateRange}}</td> -->
+                  <td>{{input.due_date}}</td>
               </tr>
           </tbody>
       </table>

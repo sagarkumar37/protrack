@@ -1,4 +1,3 @@
-
 <!-- <div>
     <p>
         provides real-time information about employee time data, attendance, and performance.
@@ -14,307 +13,352 @@
 </div> -->
 
 <div class="dashboard-main">
-    <div class="dashboard-tab">
+  <div class="dashboard-tab">
     <div class="row">
-    <div class="col-md-8">
-    <div class="dashboard-tab-btn">
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="today-tab" data-bs-toggle="tab" data-bs-target="#today" type="button" role="tab" aria-controls="today" aria-selected="true" (click)=" todayDashboard()">Today</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="yesterday-tab" data-bs-toggle="tab" data-bs-target="#yesterday" type="button" role="tab" aria-controls="yesterday" aria-selected="false" (click)="yesterdayDashboard()">Yesterday</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="past7days-tab" data-bs-toggle="tab" data-bs-target="#past7days" type="button" role="tab" aria-controls="past7days" aria-selected="false" (click)="weekDashboard()">Past 7 Days</button>
-      </li>
-       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="past30days-tab" data-bs-toggle="tab" data-bs-target="#past30days" type="button" role="tab" aria-controls="past30days" aria-selected="false" (click)="monthDashboard()">Past 30 Days</button>
-      </li>
-    </ul>
+      <div class="col-md-8">
+        <div class="dashboard-tab-btn">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="today-tab" data-bs-toggle="tab" data-bs-target="#today" type="button"
+                role="tab" aria-controls="today" aria-selected="true" (click)=" todayDashboard()">Today</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="yesterday-tab" data-bs-toggle="tab" data-bs-target="#yesterday" type="button"
+                role="tab" aria-controls="yesterday" aria-selected="false"
+                (click)="yesterdayDashboard()">Yesterday</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="past7days-tab" data-bs-toggle="tab" data-bs-target="#past7days" type="button"
+                role="tab" aria-controls="past7days" aria-selected="false" (click)="weekDashboard()">Past 7
+                Days</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="past30days-tab" data-bs-toggle="tab" data-bs-target="#past30days"
+                type="button" role="tab" aria-controls="past30days" aria-selected="false"
+                (click)="monthDashboard()">Past 30 Days</button>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+
     </div>
+
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="today" role="tabpanel" aria-labelledby="today-tab">
+            <div class="dashb-tab-content">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Total time tracked</p>
+                    <h4>{{ this.timePeriods.today.totalTime}}</h4>
+                    <div class="week">
+                      <div class="week">Today</div>
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Idle Minutes</p>
+                    <h4>{{this.timePeriods.today.idleMinutes}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped blue" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.today.idleMinutes+ '%' }" aria-valuenow="10"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Unproductive time</p>
+                    <h4>{{this.timePeriods.today.unproductiveTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped red" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.today.unproductiveTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Productive time</p>
+                    <h4>{{this.timePeriods.today.productiveTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped green" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.today.productiveTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Learning time</p>
+                    <h4>{{this.timePeriods.today.learningTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped yellow" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.today.learningTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Break time</p>
+                    <h4>{{this.timePeriods.today.breakTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped cyan" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.today.breakTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="yesterday" role="tabpanel" aria-labelledby="yesterday-tab">
+            <div class="dashb-tab-content">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Total time tracked</p>
+                    <h4>{{this.timePeriods.yesterday.totalTime}}</h4>
+                    <div class="week">Yesterday</div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Idle Minutes</p>
+                    <h4>{{this.timePeriods.yesterday.idleMinutes}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped blue" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.idleMinutes+ '%' }" aria-valuenow="10"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Unproductive time</p>
+                    <h4>{{this.timePeriods.yesterday.unproductiveTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped red" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.unproductiveTime+ '%' }"
+                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Productive time</p>
+                    <h4>{{this.timePeriods.yesterday.productiveTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped green" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.productiveTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Learning time</p>
+                    <h4>{{this.timePeriods.yesterday.learningTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped yellow" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.learningTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Break time</p>
+                    <h4>{{this.timePeriods.yesterday.breakTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped cyan" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.breakTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="past7days" role="tabpanel" aria-labelledby="past7days-tab">
+
+            <div class="dashb-tab-content">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Total time tracked</p>
+                    <h4>{{this.timePeriods.week.totalTime}}</h4>
+                    <div class="week">Past 7 Days</div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Idle Minutes</p>
+                    <h4>{{this.timePeriods.week.idleMinutes}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped blue" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.week.idleMinutes+ '%' }" aria-valuenow="10"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Unproductive time</p>
+                    <h4>{{this.timePeriods.week.unproductiveTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped red" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.week.unproductiveTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Productive time</p>
+                    <h4>{{this.timePeriods.week.productiveTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped green" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.week.productiveTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Learning time</p>
+                    <h4>{{this.timePeriods.week.learningTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped yellow" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.week.learningTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Break time</p>
+                    <h4>{{this.timePeriods.week.breakTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped cyan" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.week.breakTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="past30days" role="tabpanel" aria-labelledby="past30days-tab">
+            <div class="dashb-tab-content">
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Total time tracked</p>
+                    <h4>{{this.timePeriods.month.totalTime}}</h4>
+                    <div class="week">Past 30 Days</div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Idle Minutes</p>
+                    <h4>{{this.timePeriods.month.idleMinutes}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped blue" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.month.idleMinutes+ '%' }" aria-valuenow="10"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Unproductive time</p>
+                    <h4>{{this.timePeriods.month.unproductiveTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped red" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.month.unproductiveTime+'%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Productive time</p>
+                    <h4>{{this.timePeriods.month.productiveTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped green" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.month.productiveTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Learning time</p>
+                    <h4>{{ this.timePeriods.month.learningTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped yellow" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.month.learningTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card-time">
+                    <p>Break time</p>
+                    <h4>{{this.timePeriods.month.breakTime}}</h4>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped cyan" role="progressbar"
+                        [ngStyle]="{ 'width': this.timePeriodsWidth.month.breakTime+ '%' }" aria-valuenow="25"
+                        aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    
-    
-    </div>
-    
-    
-    <div  class="row">
-    <div class="col-md-12">
-    <div class="tab-content" id="myTabContent">
-      <div class="tab-pane fade show active" id="today" role="tabpanel" aria-labelledby="today-tab">
-      <div class="dashb-tab-content">
-      <div class="row">
-       <div class="col-md-4">
-      <div class="card-time">
-      <p>Total time tracked</p>
-      <h4>{{ this.timePeriods.today.totalTime}}</h4>
-     <div class="week">
-    <span></span></div>
-      </div>
-      </div>
-      
-      <div class="col-md-4">
-      <div class="card-time">
-      <p>Idle Minutes</p>
-      <h4>{{this.timePeriods.today.idleMinutes}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped blue" role="progressbar" [ngStyle]="{ 'width': this.timePeriodsWidth.today.idleMinutes+ '%' }" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Unproductive time</p>
-      <h4>{{this.timePeriods.today.unproductiveTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped red" role="progressbar" [ngStyle]="{ 'width': this.timePeriodsWidth.today.unproductiveTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-       
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Productive time</p>
-      <h4>{{this.timePeriods.today.productiveTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped green" role="progressbar" [ngStyle]="{ 'width': this.timePeriodsWidth.today.productiveTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Learning time</p>
-      <h4>{{this.timePeriods.today.learningTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped yellow" role="progressbar" [ngStyle]="{ 'width': this.timePeriodsWidth.today.learningTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-       <div class="col-md-4">
-      <div class="card-time">
-      <p>Break time</p>
-      <h4>{{this.timePeriods.today.breakTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped cyan" role="progressbar" [ngStyle]="{ 'width': this.timePeriodsWidth.today.breakTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-      
-      </div>
-      </div>
-      </div>
-      <div class="tab-pane fade" id="yesterday" role="tabpanel" aria-labelledby="yesterday-tab">
-      <div class="dashb-tab-content">
-      <div class="row">
-       <div class="col-md-4">
-      <div class="card-time">
-      <p>Total time tracked</p>
-      <h4>{{this.timePeriods.yesterday.totalTime}}</h4>
-     <div class="week">This week: 9h 34m
-    <span>This month: 97h 52m</span></div>
-      </div>
-      </div>
-      
-      <div class="col-md-4">
-      <div class="card-time">
-      <p>Idle Minutes</p>
-      <h4>{{this.timePeriods.yesterday.idleMinutes}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped blue" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.idleMinutes+ '%' }" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Unproductive time</p>
-      <h4>{{this.timePeriods.yesterday.unproductiveTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped red" role="progressbar" [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.unproductiveTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-       
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Productive time</p>
-      <h4>{{this.timePeriods.yesterday.productiveTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped green" role="progressbar" [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.productiveTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Learning time</p>
-      <h4>{{this.timePeriods.yesterday.learningTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped yellow" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.learningTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-       <div class="col-md-4">
-      <div class="card-time">
-      <p>Break time</p>
-      <h4>{{this.timePeriods.yesterday.breakTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped cyan" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.yesterday.breakTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-      
-      </div>
-      </div>
-      </div>
-      <div class="tab-pane fade" id="past7days" role="tabpanel" aria-labelledby="past7days-tab">
-      
-      <div class="dashb-tab-content">
-      <div class="row">
-       <div class="col-md-4">
-      <div class="card-time">
-      <p>Total time tracked</p>
-      <h4>{{this.timePeriods.week.totalTime}}</h4>
-     <div class="week">This week: 9h 34m
-    <span>This month: 97h 52m</span></div>
-      </div>
-      </div>
-      
-      <div class="col-md-4">
-      <div class="card-time">
-      <p>Idle Minutes</p>
-      <h4>{{this.timePeriods.week.idleMinutes}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped blue" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.week.idleMinutes+ '%' }" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Unproductive time</p>
-      <h4>{{this.timePeriods.week.unproductiveTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped red" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.week.unproductiveTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-       
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Productive time</p>
-      <h4>{{this.timePeriods.week.productiveTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped green" role="progressbar" [ngStyle]="{ 'width': this.timePeriodsWidth.week.productiveTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Learning time</p>
-      <h4>{{this.timePeriods.week.learningTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped yellow" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.week.learningTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-       <div class="col-md-4">
-      <div class="card-time">
-      <p>Break time</p>
-      <h4>{{this.timePeriods.week.breakTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped cyan" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.week.breakTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-      
-      </div>
-      </div>
-      </div>
-      <div class="tab-pane fade" id="past30days" role="tabpanel" aria-labelledby="past30days-tab">
-      <div class="dashb-tab-content">
-      <div class="row">
-       <div class="col-md-4">
-      <div class="card-time">
-      <p>Total time tracked</p>
-      <h4>{{this.timePeriods.month.totalTime}}</h4>
-     <div class="week">This week: 9h 34m
-    <span>This month: 97h 52m</span></div>
-      </div>
-      </div>
-      
-      <div class="col-md-4">
-      <div class="card-time">
-      <p>Idle Minutes</p>
-      <h4>{{this.timePeriods.month.idleMinutes}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped blue" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.month.idleMinutes+ '%' }" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Unproductive time</p>
-      <h4>{{this.timePeriods.month.unproductiveTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped red" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.month.unproductiveTime+'%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-       
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Productive time</p>
-      <h4>{{this.timePeriods.month.productiveTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped green" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.month.productiveTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-        <div class="col-md-4">
-      <div class="card-time">
-      <p>Learning time</p>
-      <h4>{{ this.timePeriods.month.learningTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped yellow" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.month.learningTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-       <div class="col-md-4">
-      <div class="card-time">
-      <p>Break time</p>
-      <h4>{{this.timePeriods.month.breakTime}}</h4>
-      <div class="progress">
-      <div class="progress-bar progress-bar-striped cyan" role="progressbar"  [ngStyle]="{ 'width': this.timePeriodsWidth.month.breakTime+ '%' }" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-    </div>
-      </div>
-      </div>
-      
-      
-      </div>
-      </div>
-      </div>
-    </div>
-    </div>
-    </div>
-    
-    </div>
-    </div>
-  
+
+  </div>
+</div>

@@ -1,0 +1,11 @@
+<div class="layout-container">
+    <app-sidebar class="sidebar" [class.collapsed]="isSidebarCollapsed"></app-sidebar>
+    <div class="main-content">
+        <app-header>
+            <button class="menu-toggle" (click)="toggleSidebar()">☰</button>
+        </app-header>
+        <div class="main">
+        <router-outlet></router-outlet>
+        </div>
+    </div>
+</div>

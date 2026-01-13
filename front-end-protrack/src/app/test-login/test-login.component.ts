@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ReloadService } from '../reload.service';
 import { HeadersService } from '../headers.service';
 import { environment } from 'src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
 
 // self code
 @Component({
@@ -21,7 +22,10 @@ export class TestLoginComponent implements OnInit {
 
     loginTime: Date;
  
-  constructor(private reloadService: ReloadService, private loginapiService:LoginapiService,  private router:Router, private headersService:HeadersService) { }
+  constructor(private reloadService: ReloadService, 
+              private loginapiService:LoginapiService, 
+              private router:Router, private headersService:HeadersService,
+              private toastr: ToastrService) { }
 
 
 
@@ -36,12 +40,18 @@ export class TestLoginComponent implements OnInit {
       localStorage.setItem("token", resp.token);
       this.headersService.setToken(resp.token);
       
-      this.router.navigate(['/dashboard']);
+      this.router.navigate(['/main']);
       // this.reloadService.reload();
      
     },
     (err)=>{
-      alert("something went wrong");
+      console.log(err);
+      
+ 
+      let errorMessage = err.error.message || "An unknown error occurred.";
+      this.toastr.error(`${errorMessage}`);
+      this.toastr.error(`Login Failed `);
+
    
     }
     );

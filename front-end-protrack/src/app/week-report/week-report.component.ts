@@ -6,6 +6,7 @@ import {FormControl,} from '@angular/forms';
 import { DateFormatPipe } from './date-format.pipe';
 import { MatOption } from '@angular/material/core';
 import { NextWeekDateFormatPipe } from './next-week.pipe';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-week-report',
@@ -26,8 +27,8 @@ export class WeekReportComponent implements OnInit {
     satisfaction:     null,
     learning:         null,
     core:             null,
-    skill_acquired:    "",
-    ai_productivity:   null,
+    skill_acquired:   "",
+    ai_productivity:  null,
     date:             ""
               }
   plan:any=[]
@@ -44,7 +45,10 @@ export class WeekReportComponent implements OnInit {
   toppingList: string[] = ['Extra cheese', 'Mushroom', 'Onion', 'Pepperoni', 'Sausage', 'Tomato'];
   currentWeek: number = 100;
   selectedReportType: string = 'task';
-  constructor(private dateFormat: DateFormatPipe,private nextWeekDateRange:NextWeekDateFormatPipe, private fetchReportData: FetchReportDataService) { this.currentWeek = this.setCurrentWeek();}
+  constructor(private dateFormat: DateFormatPipe,
+              private nextWeekDateRange:NextWeekDateFormatPipe,
+              private fetchReportData: FetchReportDataService,
+              private toastr: ToastrService) { this.currentWeek = this.setCurrentWeek();}
 
    //currentDate = moment();
    //year_week = parseInt(this.currentDate.format('YYYYWW'));
@@ -70,12 +74,10 @@ export class WeekReportComponent implements OnInit {
   //   })
 
   // }
-
     onDateChange(event: any): void{
       console.log("Date changed", event);
     }
     
-   
     fetchReport(){
 
       // alert(`{startDate: ${JSON.stringify(this.startDate)},\n endDate: ${JSON.stringify(this.endDate)},\n username:${JSON.stringify(this.username)}}`)
@@ -89,7 +91,10 @@ export class WeekReportComponent implements OnInit {
             this.inputs = response['tasksData'];
           },
           (error) => {
-            alert(`ERROR FETCHING THE TASK DATA\n ${error.details}`);
+            console.log(`ERROR FETCHING THE TASK DATA\n ${error.details}`);
+            // create errorMessage variable and set it to error.message or 'Error Fetching Task Data'
+            let errorMessage = error.error.message || 'Error Fetching Task Data';
+            this.toastr.error(`${errorMessage}`);
           }
         );
       } else if (this.selectedReportType === 'plan') {
@@ -99,7 +104,9 @@ export class WeekReportComponent implements OnInit {
             this.plan = response['planData'];
           },
           (error) => {
-            alert(`ERROR FETCHING THE PLAN DATA\n ${error.details}`);
+            console.log(`ERROR FETCHING THE PLAN DATA\n ${error.details}`);
+            let errMess = error.error.message || 'Error Fetching Plan Data';
+            this.toastr.error(`${errMess}`);
           }
         );
       } else if (this.selectedReportType === 'ratings') {
@@ -108,7 +115,9 @@ export class WeekReportComponent implements OnInit {
             this.ratings = response['payload'];
           },
           (error) => {
-            alert(`ERROR FETCHING THE RATINGS\n ${error.details}`);
+            console.log(`ERROR FETCHING THE RATINGS\n ${error.details}`);
+            let errMessg = error.error.message || 'Error Fetching Ratings';
+            this.toastr.error(`${errMessg}`);
           }
           );
     }}

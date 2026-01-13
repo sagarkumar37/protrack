@@ -19,9 +19,13 @@ interface TimePeriod {
 }
 
 @Component({
+
   selector: 'app-dashb',
   templateUrl: './dashb.component.html',
+  // styleUrls: ['./dashb.component.css']
   styleUrls: ['./dashb.component.css']
+
+
 })
 
 export class DashbComponent implements OnInit {
@@ -121,7 +125,9 @@ export class DashbComponent implements OnInit {
     totalTimeObj: any;
     totalTime: any;
 
-    
+    ngOnInit(): void {
+      this.todayDashboard()
+    }
 
     calculateTimeWidth(totalTimeString: string, fieldTimeString: string): number {
 
@@ -143,9 +149,9 @@ export class DashbComponent implements OnInit {
     
       //*******************************Total Time*************************************************** */
     
-      this.totalTimeTrackedService.getTotalTime(0, this.headers).subscribe(
+      this.totalTimeTrackedService.getTotalEffortTime(0, this.headers).subscribe(
         (response: any) => {
-          this.timePeriods.today.totalTime = response.total_time;
+          this.timePeriods.today.totalTime = this.sumAllEffort(response)
           
         },
         (error: any) => {
@@ -226,14 +232,14 @@ export class DashbComponent implements OnInit {
           // Handle the error response
         }
       );
-        }
+    }
 
     weekDashboard(): void{
         //*******************************Total Time*************************************************** */
 
-  this.totalTimeTrackedService.getTotalTime(7, this.headers).subscribe(
+  this.totalTimeTrackedService.getTotalEffortTime(7, this.headers).subscribe(
     (response: any) => {
-      this.timePeriods.week.totalTime = response.total_time;
+      this.timePeriods.week.totalTime = this.sumAllEffort(response);
      
     },
     (error: any) => {
@@ -322,9 +328,9 @@ export class DashbComponent implements OnInit {
 
     monthDashboard(): void{
 
-      this.totalTimeTrackedService.getTotalTime(30, this.headers).subscribe(
+      this.totalTimeTrackedService.getTotalEffortTime(30, this.headers).subscribe(
         (response: any) => {
-          this.timePeriods.month.totalTime = response.total_time;
+          this.timePeriods.month.totalTime = this.sumAllEffort(response);
          
         },
         (error: any) => {
@@ -415,9 +421,9 @@ export class DashbComponent implements OnInit {
 
       //*******************************Total Time*************************************************** */
 
-      this.totalTimeTrackedService.getTotalTime(1, this.headers).subscribe(
+      this.totalTimeTrackedService.getTotalEffortTime(1, this.headers).subscribe(
         (response: any) => {
-          this.timePeriods.yesterday.totalTime = response.total_time;
+          this.timePeriods.yesterday.totalTime = this.sumAllEffort(response);
 
         },
         (error: any) => {
@@ -502,19 +508,18 @@ export class DashbComponent implements OnInit {
 
     }
 
-   
-
-
-  
-
-    ngOnInit(): void {
+    sumAllEffort(data: any): string {
+      const totalMinutes = data.reduce((sum: number, record: any) => sum + record.totalEffort, 0);
       
-      this.todayDashboard()
-
+      // Convert minutes to HH:MM:SS format
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const seconds = 0; // Since effort is in minutes, seconds will always be 0
+    
+      const formattedTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
       
+      console.log("Total Effort Time::", formattedTime);      
+      return formattedTime;
     }
     
-
-
-
 }

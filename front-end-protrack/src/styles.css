@@ -1,6 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 /* @import url('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'); */
 
+@import "~@ng-select/ng-select/themes/material.theme.css";
+
 html, body { height: 100%; }
 body { 
   margin: 0; 
@@ -11,6 +13,23 @@ body {
   background-color: #0d6efd;
   color: #ffffff;
 }
+.ngx-toastr {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: none; /* Allows clicks to pass through */
+}
+@media (max-width: 600px) {
+  .ngx-toastr {
+    right: 10px; /* Adjust for smaller screens */
+    top: 10px;
+    max-width: 250px;
+  }
+}
+
+
+
+
 
 
 /* body, html {

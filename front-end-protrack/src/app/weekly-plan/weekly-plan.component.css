@@ -13,10 +13,18 @@
   }
   
   /* Style for the Save button */
-  .save {
+  /* .save {
     margin-top: 10px;
     float: right;
-  }
+  } */
+
+  /* Style for the Save button container */
+.save-button-container {
+  display: flex;
+  justify-content: flex-end; /* Align button to the right */
+  padding-right: 15px; /* Adjust right padding to keep the button inside the dialog */
+  margin-top: 10px; /* Space above the button, adjust as needed */
+}
   
   /* Additional styling for the first table */
   .table-responsive:first-child .table {

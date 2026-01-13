@@ -1,0 +1,90 @@
+/* Custom styles for ng-select */
+.ng-select.ng-select-sm .ng-select-container {
+  min-height: calc(1.5em + 0.5rem + 2px);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.2rem;
+  border: 1px solid #dee2e6;
+}
+
+.ng-select.ng-select-sm .ng-dropdown-panel .ng-option {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.ng-select.ng-select-focused:not(.ng-select-opened)>.ng-select-container {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.ng-select.ng-select-invalid .ng-select-container {
+  border-color: #dc3545;
+}
+
+/* Compact form styling */
+.form-control-sm, .btn-sm {
+  font-size: 0.875rem;
+}
+
+.form-label {
+  margin-bottom: 0.25rem;
+}
+
+/* Card styling */
+.card {
+  border-radius: 0.5rem;
+}
+
+/* Alert styling */
+.alert {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  margin-bottom: 0;
+}
+
+.btn-close {
+  background-size: 0.75em;
+  padding: 0.25em;
+}
+
+/* Badge styling */
+.badge {
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.25em 0.4em;
+}
+
+/* Form switch styling */
+.form-switch .form-check-input {
+  width: 2em;
+  height: 1em;
+  margin-left: 0;
+}
+
+.form-switch .form-check-label {
+  font-size: 0.875rem;
+  margin-left: 10px;
+}
+
+.btn-width{
+  width: 120px;
+}
+
+.p-heading-size{
+  font-size: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.25rem;
+  }
+  
+  .row.g-3 > [class^="col-"] {
+    margin-bottom: 0.5rem;
+  }
+  
+  .row.g-3 {
+    margin-bottom: -0.5rem;
+  }
+}

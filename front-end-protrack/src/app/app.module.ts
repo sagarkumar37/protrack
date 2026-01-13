@@ -5,13 +5,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import {MatTabsModule} from '@angular/material/tabs';
 import{MatButtonModule} from '@angular/material/button';
 
@@ -65,10 +66,31 @@ import { AdminReportComponent } from './admin-report/admin-report.component';
 import { DateFormatPipe } from './admin-report/date-format.pipe';
 import {NextWeekDateFormatPipe} from './week-report/next-week.pipe'
 import { DatePipe } from '@angular/common';
+//import { AdminLogsComponent } from './admin-logs/admin-logs.component';
+import { AdminLogsComponent } from './admin-logs/admin-logs.component';
+import { AuthInterceptor } from './interceptors/auth/auth.interceptor';
+import { MyReportComponent } from './my-report/my-report.component';
+import { GlobalReportComponent } from './global-report/global-report.component';
+import { EmployeeAttendanceLogComponent } from './employee-attendance-log/employee-attendance-log.component';
+import { NgxMaterialTimepickerModule } from 'ngx-material-timepicker';
+import { MailRegularizationApprovalComponent } from './mail-regularization-approval/mail-regularization-approval.component';
+import { RegularizedListComponent } from './regularized-list/regularized-list.component';
+import { HolidayManagementComponent } from './holiday-management/holiday-management.component';
+import { NewProjectActivityComponent } from './new-project-activity/new-project-activity.component';
+import { HodManagementComponent } from './hod-management/hod-management.component';
+import { AdminManagementComponent } from './admin-management/admin-management.component';
+// import { MatDatepickerModule } from '@angular/material/datepicker';
 // import { PlanComponent } from './weekplan/weekplan.component';
-
-
-
+import { MatListModule } from '@angular/material/list';
+import { NgSelectModule } from '@ng-select/ng-select';
+import { ApplyLeaveComponent } from './apply-leave/apply-leave.component';
+import { HodApproveLeaveComponent } from './hod-approve-leave/hod-approve-leave.component';
+import { TimesheetReportComponent } from './timesheet-report/timesheet-report.component';
+import { LayoutModule } from './layout/layout.module';
+import { AssignedMaxLeaveComponent } from './assigned-max-leave/assigned-max-leave.component'
+import { LocationPermissionDialogComponent } from './location-permission-dialog/location-permission-dialog.component';
+import { MatDialogContent, MatDialogModule } from '@angular/material/dialog';
+import { LeaveDetailDialogComponent } from './leave-detail-dialog/leave-detail-dialog.component';
 
 
 @NgModule({
@@ -93,6 +115,24 @@ import { DatePipe } from '@angular/common';
     InsertWeekReportComponent,
     AdminReportComponent,
     DateFormatPipe,
+    //AdminLogsComponent,
+    AdminLogsComponent,
+    MyReportComponent,
+    GlobalReportComponent,
+    EmployeeAttendanceLogComponent,
+    MailRegularizationApprovalComponent,
+    RegularizedListComponent,
+    HolidayManagementComponent,
+    NewProjectActivityComponent,
+    HodManagementComponent,
+    AdminManagementComponent,
+    ApplyLeaveComponent,
+    HodApproveLeaveComponent,
+    TimesheetReportComponent,
+    AssignedMaxLeaveComponent,
+    LocationPermissionDialogComponent,
+    LeaveDetailDialogComponent
+    //DatePickerComponent,
     // PlanComponent
     
   ],
@@ -116,17 +156,29 @@ import { DatePipe } from '@angular/common';
     MatProgressSpinnerModule,
     MatSortModule,
     BrowserAnimationsModule,
-    ToastrModule.forRoot(),
+    ToastrModule.forRoot({positionClass: 'ngx-toastr'}),
     NgbModule,
     MatAutocompleteModule,
     MatInputModule,
     MatSelectModule,
     NgxMatSelectSearchModule,
     MatTableExporterModule,
-    MatCardModule    
+    MatCardModule,
+    
+    MatDatepickerModule,
+    MatNativeDateModule,
+    NgxMaterialTimepickerModule,
+    MatListModule,
+    NgSelectModule,
+    LayoutModule,
+    MatDialogModule
+
   ],
   // schemas: [NO_ERRORS_SCHEMA],
-  providers: [],
+  providers: [
+    DatePipe,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

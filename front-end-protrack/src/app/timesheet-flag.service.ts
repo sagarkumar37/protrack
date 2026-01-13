@@ -21,5 +21,9 @@ export class TimesheetFlagService {
 
   }
 
+  getTimeSheetAsPerDate(selectedDate: any){
+    let apiUrl= `${environment.API_BASE_URL}/getTimeSheetAtDate`;
+    return this.http.post(apiUrl, selectedDate)
+  }
 
 }

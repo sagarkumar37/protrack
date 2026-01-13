@@ -1,0 +1,62 @@
+/* Container styling */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Form row styling */
+  .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+  }
+  
+  /* Date input styling */
+  .mat-form-field {
+    width: 250px;
+  }
+  
+  /* Button styling */
+  .btn-primary {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-primary:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Table styling */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  thead {
+    background-color: #f2f2f2;
+  }
+  
+  /* Custom styling for the date input placeholder text */
+  ::placeholder {
+    color: #aaa;
+  }
+  
+  /* Additional custom styling for mat-label */
+  .mat-label {
+    font-weight: bold;
+    font-size: 16px;
+  }
+  

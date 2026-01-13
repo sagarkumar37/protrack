@@ -1,0 +1,158 @@
+<div class="container-fluid py-3">
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+      <h4 class="mb-4 text-primary border-bottom pb-2">Project Activity Management</h4>
+
+      <!-- Project Selection Toggle -->
+      <div class="mb-2">
+        <!-- <h5 class="mb-0 p-heading-size">Project</h5>         -->
+      </div>
+      <div class="mb-3">
+        <button class="btn btn-sm btn-outline-primary" (click)="toggleProjectMode()">
+          {{ isNewProject ? 'Select Existing' : 'Create New Project' }}
+        </button>
+      </div>
+
+      <!-- New Project Form -->
+
+      <form *ngIf="isNewProject" [formGroup]="projectForm" (ngSubmit)="addProject()" class="mb-4">
+        <div class="row g-3">
+          <!-- Project Name -->
+          <div class="col-md-12">
+            <label for="projectName" class="form-label small fw-bold">Project Name *</label>
+            <input type="text" id="projectName" formControlName="projectName" class="form-control form-control-sm" 
+                               [ngClass]="{ 'is-invalid': projectForm.get('projectName')?.invalid && 
+                   (projectForm.get('projectName')?.dirty || projectForm.get('projectName')?.touched) }" />
+            <div *ngIf="projectForm.get('projectName')?.invalid && 
+                       (projectForm.get('projectName')?.dirty || projectForm.get('projectName')?.touched)"
+                 class="invalid-feedback small">
+              Project name is required            
+          </div>
+
+          <!-- Billing Type -->
+          <div class="col-md-12">
+            <label class="form-label small fw-bold">Billing Type *</label>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="billingType" value="billable" id="billableNew">
+              <label class="form-check-label small" for="billableNew">Billable</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" formControlName="billingType" value="non-billable" id="nonBillableNew">
+              <label class="form-check-label small" for="nonBillableNew">Non-Billable</label>
+            </div>
+          </div>
+
+          <!-- Non-Billable Type (only if selected) -->
+          <div class="col-md-12" *ngIf="projectForm.get('billingType')?.value === 'non-billable'">
+            <label class="form-label small fw-bold">Non-Billable Type *</label>
+            <ng-select [items]="['Internal', 'External']"
+                      formControlName="nonBillableType"
+                      placeholder="Select type"
+                      class="ng-select-sm"
+                      [clearable]="false">
+            </ng-select>
+          </div>
+
+          <!-- Customer Code -->
+          <div class="col-md-12">
+            <label class="form-label small fw-bold">Customer Code *</label>
+            <ng-select [items]="customers"
+                      bindLabel="customer_name"
+                      bindValue="customer_code"
+                      formControlName="customerCode"
+                      placeholder="Select customer"
+                      class="ng-select-sm"
+                      [searchable]="true"
+                      [clearable]="false">
+            </ng-select>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="col-md-12 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary btn-sm" [disabled]="!projectForm.valid">Create Project</button>
+          </div>
+        </div>
+      </form>
+
+      <!-- Existing Project Selector -->
+      <div *ngIf="!isNewProject" class="mb-4">
+        <label class="form-label small fw-bold">Select Project *</label>
+        <ng-select [items]="projects" 
+                   bindLabel="proj_name" 
+                   bindValue="proj_id" 
+                   [(ngModel)]="selectedProject"
+                   (change)="onProjectSelect($event)"
+                   [ngClass]="{ 'is-invalid': !selectedProject && projectSubmitted }"
+                   placeholder="Search or select project"
+                   class="ng-select-sm"
+                   [searchable]="true"
+                   [clearable]="false">
+          <ng-template ng-option-tmp let-item="item">
+            <div>{{item.proj_name}}</div>
+          </ng-template>
+        </ng-select>
+        <div *ngIf="!selectedProject && projectSubmitted" class="invalid-feedback small">
+          Please select a project
+        </div>
+      </div>
+
+      <!-- Activity Form -->
+      <div class="mt-4">
+        <!-- <h5 class="mb-3 p-heading-size border-bottom pb-2">Add Activity</h5> -->
+        
+        <form [formGroup]="activityForm" (ngSubmit)="addActivity()">
+          <div class="row g-3">
+            <div class="col-md-10">
+              <label class="form-label small fw-bold">Activity *</label>
+              <ng-select [items]="activitiesWithTypes"
+                         bindLabel="name"
+                         [groupBy]="'type_name'"
+                         formControlName="selectedActivity"
+                         [ngClass]="{ 'is-invalid': activityForm.get('selectedActivity')?.invalid && 
+                         (activityForm.get('selectedActivity')?.dirty || activityForm.get('selectedActivity')?.touched) }"
+                         placeholder="Search or select activity"
+                         class="ng-select-sm"
+                         [searchable]="true"
+                         [clearable]="false">
+                <ng-template ng-option-tmp let-item="item">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span>{{item.name}}</span>
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary small">{{item.type_name}}</span>
+                  </div>
+                </ng-template>
+              </ng-select>
+              <div *ngIf="activityForm.get('selectedActivity')?.invalid && 
+                         (activityForm.get('selectedActivity')?.dirty || activityForm.get('selectedActivity')?.touched)"
+                   class="invalid-feedback small">
+                Please select an activity
+              </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-center">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="useful" formControlName="useful">
+                <label class="form-check-label small" for="useful">Useful</label>
+              </div>
+            </div>    
+          </div>
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-primary btn-sm btn-width" 
+                    [disabled]="!activityForm.valid || !currentProject">
+              Add
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Status Messages -->
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show mt-3 py-2 small">
+        <i class="fas fa-exclamation-circle me-2"></i>{{errorMessage}}
+        <button type="button" class="btn-close p-2" (click)="errorMessage = ''"></button>
+      </div>
+      
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show mt-3 py-2 small">
+        <i class="fas fa-check-circle me-2"></i>{{successMessage}}
+        <button type="button" class="btn-close p-2" (click)="successMessage = ''"></button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -20,9 +20,8 @@ export class EmpcodeService {
 
   headers = this.headersService.getHeaders();
 
-  fetchEmpCode(headers: any): Observable<any>{
-    return this.http.get(`${this.BASE_URL}`, { headers });
-
+  fetchEmpCode(): Observable<any>{
+    return this.http.get(`${this.BASE_URL}`);
   }
 
   

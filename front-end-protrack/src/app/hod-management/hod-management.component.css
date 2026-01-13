@@ -1,0 +1,189 @@
+/* Style the card that wraps the table */
+mat-card { /* Replace .mat-card to target Angular Material class */
+  margin: 20px auto;
+  width: 80%;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+  
+  /* Style the table header */
+  mat-header-row {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  
+  /* Style each row in the table */
+  mat-row:hover {
+    background-color: #f1f1f1;
+    cursor: pointer; /* Add cursor effect */
+  }
+  
+  
+  /* Align the edit button in the last column */
+  button[mat-icon-button] {
+    /* color: #007bff; */
+    vertical-align: middle; /* Align icon button in the middle of the cell */
+  }
+  
+  
+  /* Style the department name and HOD name cells */
+  mat-cell {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+  
+  /* Add spacing between the table rows and title */
+  table {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  /* Add padding to the card title */
+  mat-card-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  
+h1, h2, h3, h4, h5 {
+    margin-bottom: 20px;
+  }
+  
+  .mat-card {
+    margin: 20px;
+  }
+  
+  .mat-button {
+    text-transform: uppercase;
+    padding: 10px 20px;
+  }
+  
+  .mat-table {
+    margin-top: 20px;
+  }
+  
+  .mat-icon {
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; 
+  }
+  
+  .popup-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    min-width: 300px;
+    max-width: 600px;
+    width: 100%; 
+    max-width: 30%; 
+  }
+  
+  
+  .popup-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+  }
+
+  /* Title for the popup */
+  .popup-content h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  /* Form styling */
+  .popup-content form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }  
+  
+  .popup-content mat-form-field {
+    width: 100%;
+  }
+  
+  .popup-content button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  /* .popup-content button[type="submit"]:hover {
+    background-color: #45a049;
+  } */
+  
+  .popup-content button[type="button"] {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .popup-content button[type="button"]:hover {
+    background-color: #e53935;
+  }
+  
+  button:focus {
+    outline: 2px solid #007bff; /* Provide visible focus state */
+    outline-offset: 4px;
+  }
+  
+  .popup-content button:disabled {
+    background-color: gray;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: not-allowed;
+    opacity: 0.6;
+    transition: background-color 0.3s, opacity 0.3s;
+  }
+
+
+  /* Animation for popup appearance */
+  @keyframes slideUpFadeIn {
+    from {
+      transform: translateY(100px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .popup-content button[type="button"] {
+    transition: background-color 0.3s;
+  }
+  
+  
+  .popup-content {
+    animation: slideUpFadeIn 0.3s ease-out;
+  }
+  
