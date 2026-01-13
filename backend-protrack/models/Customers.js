@@ -7,9 +7,14 @@ const Customers = sequelize2.define('customers', {
   customer_id: {
     type: Sequelize.INTEGER,
     primaryKey: true,
-    allowNull: false
+    allowNull: false,
+    autoIncrement: true,
   },
   customer_name: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  customer_code: {
     type: Sequelize.STRING,
     allowNull: false
   }

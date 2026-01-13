@@ -19,6 +19,8 @@ const Projects = require('./models/Projects')
 const Activity = require('./models/Activity')
 // const DaysActivities = require('./models/DaysActivities')
 const LoginLogs = require('./models/LoginLogs')
+const leaveManagement = require('./controllers/leave-management.js')
+const cron = require('node-cron');
 
 
 require('dotenv').config()
@@ -50,6 +52,11 @@ app.use('/', routes)
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`)
 })
+
+cron.schedule('0 0 1 * *', () => {
+  console.log('Running monthly leave accrual job...');
+  leaveManagement.accrueMonthlyLeavesForAllEmployees();
+});
 
 // self
 function verifyTokenAndGetId (token) {

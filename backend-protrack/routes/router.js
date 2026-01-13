@@ -17,7 +17,7 @@ router.post('/daysactivity', controllers.createDaysActivity);
 router.post('/daysactivityv2', controllers.createDaysActivityV2);
 router.post('/getTimeSheetAtDate', controllers.getTimeSheetAtDate);
 router.post('/logs',controllers.createLoginLogs)
-router.post('/attendanceDetails', controllers.getLoginLogsDeatils)
+router.post('/attendanceDetails', controllers.getLoginLogsDetails)
 router.post('/attendanceRegularizationRequest', controllers.attendanceRegularizationInsert)
 router.post('/updateAttendanceRegularizationRequest', controllers.updateAttendanceRegularizationInsert)
 router.get('/checkRegularizationRequestValid', controllers.isApprovedAttendance)
@@ -28,8 +28,10 @@ router.post('/addHoliday', adminController.addHoliday);
 router.get('/getHoliday', adminController.getHolidays);
 
 router.post('/addProject', adminController.addProject);
+router.post('/updateProject', adminController.updateProject);
 router.get('/getProject', adminController.getProjects);
 
+router.get('/getAllActivitiesWithTypes', adminController.getAllActivitiesWithTypes)
 router.post('/addActivity', adminController.addActivity);
 
 router.get('/departments', adminController.getDepartmentsWithHod);
@@ -37,6 +39,9 @@ router.post('/createDepartment', adminController.createDepartment);
 router.put('/updateHod', adminController.updateHod);
 
 router.delete('/api/hod/:departmentId', adminController.deleteDepartment)
+
+router.get('/getCustomers', adminController.getCustomers);
+router.post('/addCustomer', adminController.addCustomer);
 // End admin management
 
 //Leave Routing
@@ -44,7 +49,7 @@ router.post("/empApplyLeave", leaveController.applyLeaveByEmp)
 router.patch("/hodApproveLeave/:id", leaveController.hodApproveLeave)
 router.post("/adminAddLeave", leaveController.adminAddLeaveForEmp);
 router.get("/leaves", leaveController.getRequestedLeave);
-router.delete("/deleteLeave/:id", leaveController.deleteRequestedLeave);
+router.delete("/leave/:id", leaveController.deleteRequestedLeave);
 router.get('/leave/:req_id', leaveController.getLeaveById);
 router.get('/leave-requests', leaveController.getLeaveRequests)
 router.get('/leave-types-and-balance/:employee_id', leaveController.getLeaveTypesAndBalance)

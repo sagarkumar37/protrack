@@ -29,6 +29,27 @@ const leaveRequest = sequelize2.define(
         key: "leave_type_id",
       },
     },
+    leave_type_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    leave_days: {
+      type: DataTypes.DECIMAL(5, 2),
+      allowNull: false,
+    },
+    from_date_leave_duration: {
+      type: DataTypes.ENUM("0.25", "first_half","second_half", "0.75", "1"), // Fractional leave durations
+      allowNull: false,
+    },
+    to_date_leave_duration: {
+      type: DataTypes.ENUM("0.25", "first_half","second_half", "0.75", "1"),
+      allowNull: false,
+    },
+    
+    half_day_type: {
+      type: DataTypes.ENUM("first_half", "second_half"), // Only for 0.5-day leaves
+      allowNull: true, // Optional field
+    },
     reason: {
       type: DataTypes.TEXT,
       allowNull: true,

@@ -15,6 +15,7 @@ const Departments = require('../models/departments');
 const HolidayMst = require('../models/holiday');
 const { where, Op, fn, col } = require('sequelize');
 const DaysActivities = require('../models/DaysActivities');
+const EmployeeLocation = require('../models/employeeLocation');
 
 // const Employee = require('../index');
 // const { Employee } = require('../index');
@@ -37,8 +38,7 @@ exports.login = async (req, res) => {
     }
     try {      
       const employees = await Employees.findOne({
-        where: { username:employee_code },
-        exclude: ['password']
+        where: { username:employee_code }
       });
       console.log("login api", employees);
       if (!employees) {
@@ -55,7 +55,9 @@ exports.login = async (req, res) => {
           attributes: ['hod_id']
         })          
         
-        res.status(200).send({ token, employees, isHod});
+        const { password, ...employeeData } = employees.dataValues;
+
+        res.status(200).send({ token, employees: employeeData, isHod });
       }     
 
     } catch (error) {
@@ -107,19 +109,19 @@ exports.logout = async (req, res) => {
 /****************Self Code *************************************************/
 
 exports.punchIn = async (req, res) => {
-  const { punchInTime } = req.body
-  console.log("punchInTime:", punchInTime);
+  let { punchInTime, location } = req.body;
+
   try {
-    const token = req.headers.authorization
+    const token = req.headers.authorization;
     if (!token) {
-      return res.status(401).send({ message: 'Token missing' })
+      return res.status(401).send({ message: 'Token missing' });
     }
 
-    const empcode = verifyTokenAndGetId(token)
-    console.log(empcode + ' empcode from punchin')
-
-    const loginTime = new Date(punchInTime)
-    
+    const empcode = verifyTokenAndGetId(token);
+    if (punchInTime.includes('−')) {
+      punchInTime = punchInTime.replace('−', '-');
+    }
+    const loginTime = new Date(punchInTime);
     const mysqlDateString = await getCurrentDate(0);
 
     const mysqlTime = loginTime.toLocaleTimeString('en-US', {
@@ -127,67 +129,78 @@ exports.punchIn = async (req, res) => {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
-    })
+    });
 
-    const loginLog = await LoginLogs.findOne({
+    // Find or create login log
+    const [loginLog, created] = await LoginLogs.findOrCreate({
       where: {
         employeecode: empcode,
         date: mysqlDateString
+      },
+      defaults: {
+        start_time: mysqlTime
       }
     });
 
-    if (loginLog) {
-      console.log("Record found:", loginLog);
-      const updatedRecord = await LoginLogs.update(
-        { start_time: mysqlTime },
-        {
-          where: {
-            employeecode: empcode,
-            date: mysqlDateString
-          }
-        }
-      );
-      console.log("Rows affected:", updatedRecord[0]);
-    } else {
-      console.log("No matching record found for the given empcode and date.");
+    if (!created) {
+      await loginLog.update({ start_time: mysqlTime });
     }
 
+    // Create location record
+    await EmployeeLocation.create({
+      employee_id: empcode,
+      event_type: 'punch_in',
+      event_time: loginTime,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      accuracy: location.accuracy,
+      location_name: location.name,
+      area: location.area
+    });
 
-    console.log('Start time updated successfully.');
-    res.status(200).send({ message: 'Record updated successfully' });
+    console.log('Punch in recorded successfully');
+    res.status(200).send({ 
+      success: true,
+      message: 'Punch in recorded successfully'
+    });
 
   } catch (error) {
-    console.error('Error verifying token:', error)
-    res.status(401).send({
-      message: 'Invalid token'
-    }) // send a response to the client indicating failure
+    console.error('Error in punchIn:', error);
+    res.status(500).send({
+      success: false,
+      message: 'Error recording punch in',
+      error: error.message
+    });
   }
-}
+};
 
-exports.punchOut  = async (req, res) => {
-  const { punchOutTime } = req.body
+exports.punchOut = async (req, res) => {
+  let { punchOutTime, location } = req.body;
   console.log("punchOutTime:", punchOutTime);
-  
+  console.log("Location:", location);
 
   try {
-    const token = req.headers.authorization
+    const token = req.headers.authorization;
     if (!token) {
-      return res.status(401).send({ message: 'Token missing' })
+      return res.status(401).send({ message: 'Token missing' });
     }
 
-    const empcode = verifyTokenAndGetId(token)
-    console.log(empcode + ' empcode from punchin')
-
-    const loginTime = new Date(punchOutTime)
+    const empcode = verifyTokenAndGetId(token);
+    console.log(empcode + ' empcode from punchout');
+    if (punchOutTime.includes('−')) {
+      punchOutTime = punchOutTime.replace('−', '-')
+    }
+    const logoutTime = new Date(punchOutTime);
     const mysqlDateString = await getCurrentDate(0);
 
-    const mysqlTime = loginTime.toLocaleTimeString('en-US', {
+    const mysqlTime = logoutTime.toLocaleTimeString('en-US', {
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
-    })
+    });
 
+    // Find or create login log
     const loginLog = await LoginLogs.findOne({
       where: {
         employeecode: empcode,
@@ -195,32 +208,43 @@ exports.punchOut  = async (req, res) => {
       }
     });
 
-    if (loginLog) {
-      console.log("Record found:", loginLog);
-      const updatedRecord = await LoginLogs.update(
-        { end_time: mysqlTime },
-        {
-          where: {
-            employeecode: empcode,
-            date: mysqlDateString
-          }
-        }
-      );
-      console.log("Rows affected:", updatedRecord[0]);
-    } else {
-      console.log("No matching record found for the given empcode and date.");
+    if (!loginLog) {
+      return res.status(404).send({
+        success: false,
+        message: 'No matching punch-in record found'
+      });
     }
 
-    console.log('Start time updated successfully.');
-    res.status(200).send({ message: 'Record updated successfully' });
+    // Update end time
+    await loginLog.update({ end_time: mysqlTime });
+
+    // Create location record
+    await EmployeeLocation.create({
+      employee_id: empcode,
+      event_type: 'punch_out',
+      event_time: logoutTime,
+      latitude: location.latitude,
+      longitude: location.longitude,
+      accuracy: location.accuracy,
+      location_name: location.name,
+      area: location.area
+    });
+
+    console.log('Punch out recorded successfully');
+    res.status(200).send({ 
+      success: true,
+      message: 'Punch out recorded successfully'
+    });
 
   } catch (error) {
-    console.error('Error verifying token:', error)
-    res.status(401).send({
-      message: 'Invalid token'
-    }) // send a response to the client indicating failure
+    console.error('Error in punchOut:', error);
+    res.status(500).send({
+      success: false,
+      message: 'Error recording punch out',
+      error: error.message
+    });
   }
-}
+};
 
 /****************Self Code **********************************************/
 
@@ -1352,20 +1376,80 @@ exports.createLoginLogs = async (req, res) => {
   }
 };
 
-exports.getLoginLogsDeatils = async (req, res) => {
+exports.getLoginLogsDetails = async (req, res) => {
   try {
     const date = req.body.date;
-    console.log("date::", date);
-    
     const token = req.headers.authorization;
     const empCode = verifyTokenAndGetId(token);
 
-    sequelize2.query(
-      `SELECT * 
-        FROM loginlogs 
-        WHERE employeecode = :empCode 
-          AND YEAR(date) = YEAR(:date) 
-          AND MONTH(date) = MONTH(:date)`,
+    // Get login logs with their corresponding location data
+    const results = await sequelize2.query(
+      `SELECT 
+        l.*,
+        (SELECT latitude FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_in'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_in_latitude,
+         
+        (SELECT longitude FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_in'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_in_longitude,
+         
+        (SELECT accuracy FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_in'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_in_accuracy,
+         
+        (SELECT location_name FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_in'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_in_location_name,
+         
+        (SELECT area FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_in'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_in_area,
+         
+        (SELECT latitude FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_out'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_out_latitude,
+         
+        (SELECT longitude FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_out'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_out_longitude,
+         
+        (SELECT accuracy FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_out'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_out_accuracy,
+         
+        (SELECT location_name FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_out'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_out_location_name,
+         
+        (SELECT area FROM employee_locations 
+         WHERE employee_id = l.employeecode 
+         AND event_type = 'punch_out'
+         AND DATE(recorded_at) = l.date
+         ORDER BY recorded_at DESC LIMIT 1) AS punch_out_area
+      FROM loginlogs l
+      WHERE l.employeecode = :empCode
+        AND YEAR(l.date) = YEAR(:date)
+        AND MONTH(l.date) = MONTH(:date)
+      ORDER BY l.date DESC`,
       {
         replacements: { 
           empCode: empCode,
@@ -1373,20 +1457,42 @@ exports.getLoginLogsDeatils = async (req, res) => {
         },
         type: sequelize2.QueryTypes.SELECT,
       }
-    ).then(result => {
-      res.send(result);
+    );
+    
+
+    // Format the results
+    const formattedResults = results.map(log => ({
+      ...log,
+      punch_in_location: log.punch_in_latitude ? {
+        latitude: log.punch_in_latitude,
+        longitude: log.punch_in_longitude,
+        accuracy: log.punch_in_accuracy,
+        name: log.punch_in_location_name,
+        area: log.punch_in_area
+      } : null,
+      punch_out_location: log.punch_out_latitude ? {
+        latitude: log.punch_out_latitude,
+        longitude: log.punch_out_longitude,
+        accuracy: log.punch_out_accuracy,
+        name: log.punch_out_location_name,
+        area: log.punch_out_area
+      } : null
+    }));
+
+    res.json({
+      success: true,
+      data: formattedResults
     });
-      
 
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching login logs:', error);
     res.status(500).json({
       success: false,
       message: 'Failed to get login logs details',
       error: error.message
     });
   }
-}
+};
 
 exports.getAttendanceRegularizationReq = async (req, res) => {
 

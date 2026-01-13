@@ -42,9 +42,17 @@ exports.timesheetReport = async (req, res) => {
       } else if (dim === "activity_type") {
         selectFields.push("a.activity_type AS Activity_type");
         groupByFields.push("a.activity_type");
+      }
+      else if (dim === "activity_name") {
+        selectFields.push("a.activity_name AS Activity_name");
+        groupByFields.push("a.activity_name");
       } else if (dim === "day") {
         selectFields.push("da.day AS Date");
         groupByFields.push("da.day");
+      }
+      else if (dim === "description") {
+        selectFields.push("da.description AS Description");
+        groupByFields.push("da.description");
       }
     });
 
@@ -52,12 +60,13 @@ exports.timesheetReport = async (req, res) => {
     let groupByClause = "";
 
     const whereConditions = [];
-    if (start_date) whereConditions.push("da.day >= :start_date");
-    if (end_date) whereConditions.push("da.day <= :end_date");
+    if (start_date) whereConditions.push("da.day >= DATE(:start_date)");
+    if (end_date) whereConditions.push("da.day <= DATE(:end_date)");
     if (employee_ids && employee_ids.length > 0) whereConditions.push("da.employee IN (:employee_ids)");
     if (project_ids && project_ids.length > 0) whereConditions.push("p.proj_id IN (:project_ids)");
     if (activity_types && activity_types.length > 0) whereConditions.push("a.activity_type IN (:activity_types)");
 
+    console.log("start_date::", start_date)
     const whereClause = whereConditions.length > 0 ? "WHERE " + whereConditions.join(" AND ") : "";
 
     let baseQuery = `
@@ -80,6 +89,7 @@ exports.timesheetReport = async (req, res) => {
         a.activity_name AS Activity_name,
         a.activity_type AS Activity_type,
         da.day AS Date,
+        da.description AS Description,
         ROUND(da.effort_placed/60, 1) AS Hours
       `;
     }

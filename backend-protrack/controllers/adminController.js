@@ -5,6 +5,7 @@ const Activity   = require('../models/Activity');
 const Departments = require('../models/departments');
 const Employees = require('../models/Employees');
 const holidays = require('../models/holiday');
+const Customers= require('../models/Customers');
 const sequelize2 = require('../config/db');
 
 // Holiday Management
@@ -58,47 +59,63 @@ exports.getHolidays = async (req, res) => {
 };
 
 // Project Management
+
 exports.addProject = async (req, res) => {
-    console.log("req.body:", req.body);
-    
-    const { projectName } = req.body;
-    console.log("projectName::", projectName);
-    
-    try {
-        const token = req.headers.authorization
-        const empcode = verifyTokenAndGetId(token);
-        console.log("empcode:", empcode);
-        
-        if (!empcode) {
-            return res.status(401).json({ error: 'Invalid token' })
-        }
+  const { projectName, billingType, nonBillableType, customerCode, description } = req.body;
 
-        const projects = await Projects.findOne({
-            where: {
-                proj_name: projectName.trim()
-            }           
-        })
-        let newProject;
+  try {
+    const token = req.headers.authorization;
+    const empcode = verifyTokenAndGetId(token);
+    if (!empcode) return res.status(401).json({ error: "Invalid token" });
 
-        if(!projects){
-            newProject = await Projects.create({
-                proj_name: projectName
-            });
-        }
-        else{
-            return res.status(201).json({ error: 'Project name already exist' })
-        }
-
-        res.status(200).json({ message: 'Project added successfully', newProject});
-    } catch (error) {
-        let failedReason = {
-            success: false,
-            message: 'Error adding project',
-            error: error.message
-        }
-        res.status(500).json(failedReason)
+    // check project already exists
+    const existing = await Projects.findOne({ where: { proj_name: projectName.trim() } });
+    if (existing) {
+      return res.status(400).json({ error: "Project name already exists" });
     }
+
+    const newProject = await Projects.create({
+      proj_name: projectName,
+      proj_desc: description,
+      billable: billingType === "billable",
+      capitalizable: billingType === "non-billable" ? true : false,
+      non_billable_type: billingType === "non-billable" ? nonBillableType : null,
+      customer_code: customerCode || null
+    });
+
+    return res.status(200).json({ message: "Project added successfully", newProject });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error adding project", error: error.message });
+  }
 };
+
+
+exports.updateProject = async (req, res) => {
+  const { projectId, billingType, nonBillableType, customerCode } = req.body;
+
+  try {
+    const token = req.headers.authorization;
+    const empcode = verifyTokenAndGetId(token);
+    if (!empcode) return res.status(401).json({ error: "Invalid token" });
+
+    let project = await Projects.findByPk(projectId);
+    if (!project) {
+      return res.status(404).json({ error: "Project not found" });
+    }
+
+    await project.update({
+      billable: billingType === "billable",
+      capitalizable: billingType === "non-billable" ? true : false,
+      non_billable_type: billingType === "non-billable" ? nonBillableType : null,
+      customer_code: customerCode || null
+    });
+
+    return res.status(200).json({ message: "Project updated successfully", updatedProject: project });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error updating project", error: error.message });
+  }
+};
+
 
 exports.getProjects = async (req, res) => {
     try {        
@@ -116,7 +133,7 @@ exports.getProjects = async (req, res) => {
     } catch (error) {
         let failedReason = {
             success: false,
-            message: 'Error fetching holidays',
+            message: 'Error fetching Project',
             error: error.message
         }
         res.status(500).json(failedReason)
@@ -124,8 +141,8 @@ exports.getProjects = async (req, res) => {
 };
 
 exports.addActivity = async (req, res) => {
-    const { activityName, description, useful, projId, } = req.body;
-    console.log("projectName::", activityName);
+    const { activity_name, activity_type, description, useful, proj_id, } = req.body;
+    console.log("projectName::", activity_name);
     
     try {
         const token = req.headers.authorization
@@ -138,20 +155,21 @@ exports.addActivity = async (req, res) => {
 
         const activity = await Activity.findOne({
             where: {
-                activity_name: activityName.trim()
+                activity_name: activity_name.trim()
             }           
         })
         let newActivity;
 
         if(!activity){
             newActivity = await Activity.create({
-                activity_name: activityName,
-                proj_id: projId,
-                useful: useful
+                activity_name,
+                proj_id,
+                useful,
+                activity_type
             });
         }
         else{
-            return res.status(401).json({ error: 'activity name already exist' })
+            return res.status(201).json({ error: 'activity name already exist' })
         }
 
         res.status(201).json({ message: 'Activity added successfully', newActivity});
@@ -163,6 +181,33 @@ exports.addActivity = async (req, res) => {
         }
         res.status(500).json(failedReason)
     }
+};
+
+exports.getAllActivitiesWithTypes = async (req, res) => {
+  try {
+    const token = req.headers.authorization
+    const empcode = verifyTokenAndGetId(token);
+    console.log("empcode:", empcode);
+    
+    if (!empcode) {
+        return res.status(401).json({ error: 'Invalid token' })
+    }
+    const [results] = await sequelize2.query(`
+      SELECT a.id, a.name, t.type_name 
+      FROM activity_masters a
+      JOIN activity_types t ON a.type_id = t.id
+      ORDER BY a.name
+    `);
+    res.status(200).json({ message: 'Activities with types fetch successfully', results});
+  } catch (error) {
+    console.error('Error fetching activities with types:', error);
+    let failedReason = {
+      success: false,
+      message: 'Error fetching activities with types',
+      error: error.message
+  }
+  res.status(500).json(failedReason)
+  }
 };
 
 // HoD Management
@@ -306,6 +351,62 @@ exports.deleteDepartment = async (req, res) => {
         error: error.message,
       });
     } 
+}
+
+exports.getCustomers= async (req, res) => {
+  try{
+
+    const token = req.headers.authorization
+    const empcode = verifyTokenAndGetId(token);
+    console.log("empcode:", empcode);
+    
+    if (!empcode) {
+        return res.status(401).json({ error: 'Invalid token' })
+    }
+
+    const customers= await Customers.findAll()
+    console.log("customers::", customers)
+    if(customers){
+      res.status(200).json(customers);
+    }else{
+      let failedReason = {
+      success: false,
+      message: 'Error fetching customers',
+      error: error.message
+      }
+      res.status(500).json(failedReason)
+    }
+
+
+  }catch(error){
+    let failedReason = {
+        success: false,
+        message: 'Error fetching customers',
+        error: error.message
+    }
+    res.status(500).json(failedReason)
+  }
+  
+}
+
+exports.addCustomer = async (req, res) => {
+  try {
+    const { customer_name, customer_code } = req.body;
+
+    if (!customer_name || !customer_code) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const newCustomer = await Customers.create({
+      customer_name,
+      customer_code
+    });
+
+    res.status(201).json(newCustomer);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to create customer" });
+  }
 }
   
 

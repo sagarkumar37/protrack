@@ -10,57 +10,189 @@ const moment = require('moment');
 const crypto = require('crypto');
 const { where, Op, fn, col } = require('sequelize');
 
+const Employees = require('../models/Employees');
+
+
+
+
+function calculateLeaveDaysForEmp(startDate, endDate, fromDuration, toDuration) {
+  const days = [];
+  let totalLeaveDays = 0;
+  let current = new Date(startDate);
+
+  const isMultiDay = startDate.toDateString() !== endDate.toDateString();
+
+  while (current <= endDate) {
+    const dayOfWeek = current.getDay();
+    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+    if (!isWeekend) {
+      let dayLeaveValue = 0;
+      let onLeaveValue = 0;
+
+      if (isMultiDay) {
+        if (current.toDateString() === startDate.toDateString()) {
+          dayLeaveValue = getDayValueForEmp(fromDuration);
+          onLeaveValue = fromDuration === '1' ? 1 :
+                         fromDuration === 'first_half' ? 2 :
+                         fromDuration === 'second_half' ? 3 :
+                         fromDuration === '0.25' ? 4 :
+                         fromDuration === '0.75' ? 5 : 1;
+        } else if (current.toDateString() === endDate.toDateString()) {
+          dayLeaveValue = getDayValueForEmp(toDuration);
+          onLeaveValue = toDuration === '1' ? 1 :
+                         toDuration === 'first_half' ? 2 :
+                         toDuration === 'second_half' ? 3 :
+                         toDuration === '0.25' ? 4 :
+                         toDuration === '0.75' ? 5 : 1;
+        } else {
+          dayLeaveValue = 1;
+          onLeaveValue = 1;
+        }
+      } else {
+        dayLeaveValue = getDayValueForEmp(fromDuration);
+        onLeaveValue = fromDuration === '1' ? 1 :
+                       fromDuration === 'first_half' ? 2 :
+                       fromDuration === 'second_half' ? 3 :
+                       fromDuration === '0.25' ? 4 :
+                       fromDuration === '0.75' ? 5 : 1;
+      }      
+
+      days.push({
+        date: current.toISOString().split('T')[0],
+        on_leave_value: onLeaveValue,
+        dayLeaveValue
+      });
+
+      totalLeaveDays += dayLeaveValue;
+    }
+
+    current.setDate(current.getDate() + 1);
+  }
+
+  return {
+    days,
+    totalLeaveDays
+  };
+}
+
+function getDayValueForEmp(duration) {
+  switch (duration) {
+    case '1': return 1;
+    case 'first_half': return 0.5;
+    case 'second_half': return 0.5;
+    case '0.25': return 0.25;
+    case '0.75': return 0.75;
+    default: return 0;
+  }
+}
+
+
 // Employee applies for leave
   exports.applyLeaveByEmp = async (req, res) => {
+    const body = req.body;
+    const token = req.headers.authorization;
+    const empId = verifyTokenAndGetId(token);
+
+    if (!empId) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    const {
+      employee_id,
+      from_date,
+      to_date,
+      leave_type_id,
+      reason,
+      emp_email,
+      from_date_leave_duration,
+      to_date_leave_duration,
+      departmentId,
+      half_day_type
+    } = body;
+
     try {
-      const body = req.body;
-      const token = req.headers.authorization;
-      const empId = verifyTokenAndGetId(token);
-
-      if (!empId) {
-        return res.status(401).json({ message: 'Invalid token' });
-      }
-
       // Validate required fields
-      if (!body.from_date || !body.to_date || !body.leave_type_id || !body.reason || !body.departmentId) {
-        return res.status(400).json({ message: 'Missing required fields' });
+      if (!employee_id || !from_date || !to_date || !leave_type_id || !from_date_leave_duration || !to_date_leave_duration || !departmentId) {
+        return res.status(400).json({ message: 'Missing required fields.' });
       }
 
-      // Validate dates
-      const fromDate = new Date(body.from_date);
-      const toDate = new Date(body.to_date);
-      const currentDate = new Date();
+      const fromDate = new Date(from_date);
+      const toDate = new Date(to_date);
 
+      // Date validation
       if (fromDate > toDate) {
         return res.status(400).json({ message: 'From date cannot be after to date' });
       }
 
-      // Calculate the number of leave days
-      const leaveDays = Math.floor((toDate - fromDate) / (1000 * 60 * 60 * 24)) + 1;
+      const timeDiff = toDate - fromDate;
+      const totalDays = Math.floor(timeDiff / (1000 * 60 * 60 * 24)) + 1;
 
-      // Validate leave type
-      const leaveType = await leave_type.findByPk(body.leave_type_id);
+      const leaveType = await leave_type.findByPk(leave_type_id);
       if (!leaveType) {
         return res.status(404).json({ message: 'Leave type not found' });
       }
 
-      // Check the employee's remaining leave balance
-      const assignedLeave = await assigned_leave.findOne({
+      const leave_type_name = leaveType.leave_type_name;
+
+      const existingLeave = await leave_requests.findOne({
         where: {
-          employee_id: empId,
-          leave_type_id: body.leave_type_id,
-        },
+            employee_id,
+            status: 'Approved',
+            [Op.or]: [
+                {
+                    from_date: {
+                        [Op.between]: [from_date, to_date]
+                    }
+                },
+                {
+                    to_date: {
+                        [Op.between]: [from_date, to_date]
+                    }
+                },
+                {
+                    [Op.and]: [
+                        { from_date: { [Op.lte]: from_date } },
+                        { to_date: { [Op.gte]: to_date } }
+                    ]
+                }
+            ]
+        }
+      });
+
+      console.log("existing leave::", existingLeave)
+
+      if (existingLeave) {
+        return res.status(409).json({ message: 'Leave already approved for the selected date range.' });
+      }
+
+      const {
+        totalLeaveDays,
+        days: leaveDayDetails
+      } = calculateLeaveDaysForEmp(fromDate, toDate, from_date_leave_duration, to_date_leave_duration);
+      
+      if (totalLeaveDays === 0) {
+        return res.status(400).json({ message: 'Invalid leave durations provided' });
+      }
+
+      const leaveDays = totalLeaveDays;
+
+      // Check leave balance
+      const assignedLeave = await assigned_leave.findOne({
+        where: { employee_id, leave_type_id },
       });
 
       if (!assignedLeave) {
-        return res.status(404).json({ message: 'Leave balance not found for this employee and leave type' });
+        return res.status(404).json({ message: 'Leave balance not found.' });
       }
 
       if (assignedLeave.max_leaves < leaveDays) {
-        return res.status(400).json({ message: `Insufficient leave balance. You have only ${assignedLeave.max_leaves} days left for ${leaveType.leave_type_name}.` });
+        return res.status(400).json({
+          message: `Insufficient leave balance. You have only ${assignedLeave.max_leaves} days left.`,
+        });
       }
 
-      // Generate a unique request ID
+      // Generate unique request ID
       const uniqueRequestId = `${Date.now()}${crypto.randomInt(100000, 999999)}`;
 
       // Fetch HoD details
@@ -69,10 +201,7 @@ const { where, Op, fn, col } = require('sequelize');
         FROM departments d
         JOIN employees e ON d.hod_id = e.id
         WHERE d.dep_id = :departmentId`,
-        {
-          replacements: { departmentId: body.departmentId },
-          type: sequelize2.QueryTypes.SELECT,
-        }
+        { replacements: { departmentId }, type: sequelize2.QueryTypes.SELECT }
       );
 
       if (!hodDetails.length) {
@@ -81,27 +210,28 @@ const { where, Op, fn, col } = require('sequelize');
 
       const { hod_id: hodId, hod_email: hodEmail } = hodDetails[0];
 
-      // Insert leave request
-      const leaveRequest = {
-        employee_id: empId,
-        from_date: fromDate.toISOString().split('T')[0],
-        to_date: toDate.toISOString().split('T')[0],
-        leave_type_id: body.leave_type_id,
-        reason: body.reason,
-        req_id: uniqueRequestId,
+      // Create leave request
+      const leaveRequest = await leave_requests.create({
+        employee_id,
+        from_date: moment(from_date).format('YYYY-MM-DD'),
+        to_date: moment(to_date).format('YYYY-MM-DD'),
+        leave_type_id,
+        leave_type_name,
+        reason,
+        from_date_leave_duration,
+        to_date_leave_duration,
+        leave_days: leaveDays,
+        half_day_type: half_day_type || null,
         status: 'Pending',
+        req_id: uniqueRequestId,
         hod_id: hodId,
         hod_email: hodEmail,
-        request_date: currentDate.toISOString().split('T')[0],
-        emp_email: body.emp_email,
-      };
-
-      const result = await leave_requests.create(leaveRequest);
-
-      // Generate approval URL
-      const approvalUrl = `${config.uiUrl}/leave-approval?req_id=${uniqueRequestId}`;
+        request_date: new Date().toISOString().split('T')[0],
+        emp_email,
+      });
 
       // Send email to HoD
+      const approvalUrl = `${config.uiUrl}/leave-approval?req_id=${uniqueRequestId}`;
       const mailOptions = {
         from: `${config.fromName} <${config.fromMail}>`,
         to: hodEmail,
@@ -109,10 +239,11 @@ const { where, Op, fn, col } = require('sequelize');
         html: `
           <p><b>Leave Request Details:</b></p>
           <p><b>Employee Email:</b> ${body.emp_email}</p>
-          <p><b>Start Date:</b> ${fromDate.toISOString().split('T')[0]}</p>
-          <p><b>End Date:</b> ${toDate.toISOString().split('T')[0]}</p>
-          <p><b>Leave Type:</b> ${leaveType.leave_type_name}</p>
+          <p><b>Start Date:</b> ${moment(from_date).format('YYYY-MM-DD')}</p>
+          <p><b>End Date:</b> ${moment(to_date).format('YYYY-MM-DD')}</p>
+          <p><b>Leave Type:</b> ${leave_type_name}</p>
           <p><b>Reason:</b> ${body.reason}</p>
+          <p><b>Total Leave Days:</b> ${leaveDays}</p>
           <p>
             <b>URL to Approve/Reject:</b>
             <a href="${approvalUrl}">Click here to review the request</a>
@@ -121,25 +252,17 @@ const { where, Op, fn, col } = require('sequelize');
       };
 
       transportMail(mailOptions)
-        .then((info) => {
-          console.log('Email sent successfully:', info.response);
-        })
-        .catch((err) => {
-          console.error('Error sending email:', err);
-        });
+        .then(info => console.log('Email sent:', info.response))
+        .catch(err => console.error('Email error:', err));
 
-      return res.json({
+      return res.status(201).json({
         success: true,
-        message: 'Leave request submitted successfully',
-        data: result,
+        message: 'Leave request submitted successfully.',
+        data: leaveRequest,
       });
     } catch (error) {
-      console.error('Error inserting leave request:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to insert leave request',
-        error: error.message,
-      });
+      console.error('Error applying leave:', error);
+      return res.status(500).json({ message: 'Failed to apply leave.' });
     }
   };
   
@@ -185,7 +308,6 @@ const { where, Op, fn, col } = require('sequelize');
     }
   };
   
-  // HOD approves/rejects leave
   exports.hodApproveLeave = async (req, res) => {
     const { id } = req.params; // Leave request ID
     const { status, hod_comments } = req.body;
@@ -201,24 +323,17 @@ const { where, Op, fn, col } = require('sequelize');
         return res.status(400).json({ success: false, message: "Invalid status." });
       }
   
-      // Update leave request status and HOD comments
+      // Update status and comments
       leave.status = status;
       leave.hod_comments = hod_comments;
       await leave.save();
   
-      // If leave is approved, update the assigned_leave table and mark leave in login logs
       if (status === "Approved") {
-        // Fetch the leave type and calculate the number of leave days
         const leaveType = await leave_type.findByPk(leave.leave_type_id);
         if (!leaveType) {
           return res.status(404).json({ success: false, message: "Leave type not found." });
         }
   
-        const leaveDays = Math.floor(
-          (new Date(leave.to_date) - new Date(leave.from_date)) / (1000 * 60 * 60 * 24)
-        ) + 1; // Include both start and end dates
-  
-        // Fetch the assigned leave record for the employee and leave type
         const assignedLeave = await assigned_leave.findOne({
           where: {
             employee_id: leave.employee_id,
@@ -230,54 +345,36 @@ const { where, Op, fn, col } = require('sequelize');
           return res.status(404).json({ success: false, message: "Assigned leave record not found." });
         }
   
-        // Check if the employee has sufficient leave balance
+        const leaveDays = parseFloat(leave.leave_days);
         if (assignedLeave.max_leaves < leaveDays) {
           return res.status(400).json({ success: false, message: "Insufficient leave balance." });
         }
   
-        // Update the remaining leave balance in the assigned_leave table
+        // Deduct leave
         assignedLeave.max_leaves -= leaveDays;
         await assignedLeave.save();
   
-        // Mark leave in login logs
-        const leaveDates = [];
-        let currentDate = new Date(leave.from_date);
-        const endDate = new Date(leave.to_date);
+        // Parse leave_day_details (JSON array stored in DB or passed elsewhere)
+        const leaveDayDetails = JSON.parse(leave.leave_day_details || "[]");
   
-        // Generate leave dates
-        while (currentDate <= endDate) {
-          leaveDates.push(new Date(currentDate).toISOString().split("T")[0]); // Format to YYYY-MM-DD
-          currentDate.setDate(currentDate.getDate() + 1);
-        }
-  
-        // Bulk update login logs
-        const logUpdates = leaveDates.map((date) =>
+        const logUpdates = leaveDayDetails.map((day) =>
           LoginLogs.upsert({
-            date,
+            date: day.date,
             employeecode: leave.employee_id,
-            on_leave: 1,
+            on_leave: day.on_leave_value
           })
         );
   
         await Promise.all(logUpdates);
       }
   
-      // Send email notification to the employee
-      const mailSubject = status === "Approved"
-        ? "Leave Request Approved"
-        : "Leave Request Rejected";
+      // Send mail
+      const mailSubject = status === "Approved" ? "Leave Request Approved" : "Leave Request Rejected";
   
       const mailOptions = {
         from: `${config.fromName} <${config.fromMail}>`,
         to: leave.emp_email,
         subject: mailSubject,
-        text: `Leave Request Details:\n
-          Employee: ${leave.emp_email}\n
-          From Date: ${leave.from_date}\n
-          To Date: ${leave.to_date}\n
-          Reason: ${leave.reason}\n
-          HOD Comments: ${hod_comments}\n
-          Status: ${status}`,
         html: `
           <p><b>Leave Request Details:</b></p>
           <p><b>Employee Email:</b> ${leave.emp_email}</p>
@@ -286,18 +383,13 @@ const { where, Op, fn, col } = require('sequelize');
           <p><b>Reason:</b> ${leave.reason}</p>
           <p><b>HOD Comments:</b> ${hod_comments}</p>
           <p><b>Status:</b> ${status}</p>
+          <p><b>Total Leave Days:</b> ${parseFloat(leave.leave_days)}</p>
         `,
       };
   
       transportMail(mailOptions)
-        .then((info) => {
-          console.log("Email sent successfully:", info.response);
-        })
-        .catch((err) => {
-          console.error("Error sending email:", err);
-        });
-  
-      console.log("mailOptions::", mailOptions);
+        .then((info) => console.log("Email sent:", info.response))
+        .catch((err) => console.error("Email error:", err));
   
       res.status(200).json({ success: true, message: `Leave ${status.toLowerCase()} successfully.` });
     } catch (error) {
@@ -305,6 +397,7 @@ const { where, Op, fn, col } = require('sequelize');
       res.status(500).json({ success: false, error: error.message });
     }
   };
+  
   
   
   exports.getLeaveById = async (req, res) => {
@@ -338,126 +431,235 @@ const { where, Op, fn, col } = require('sequelize');
   
   // Admin creates leave for an employee
   exports.adminAddLeaveForEmp = async (req, res) => {
-    const { employee_id, from_date, to_date, leave_type_id, reason, emp_email } = req.body;
-  
+    const body = req.body;
     const token = req.headers.authorization;
     const empId = verifyTokenAndGetId(token);
-  
-    console.log("Employee ID:", empId);
-  
+
+    const transaction = await sequelize2.transaction();
     if (!empId) {
-      return res.status(401).json({ message: 'Invalid token' });
+        return res.status(401).json({ message: 'Invalid token' });
     }
-  
+
+    const { 
+        employee_id, 
+        from_date, 
+        to_date, 
+        leave_type_id, 
+        reason, 
+        emp_email, 
+        from_date_leave_duration, 
+        to_date_leave_duration,
+        half_day_type 
+    } = body;
+
     try {
-      // Validate leave type
-      const leaveType = await leave_type.findByPk(leave_type_id);
-      if (!leaveType) {
-        return res.status(404).json({ message: 'Leave type not found' });
-      }
-  
-      // Check for duplicate leave request
-      const duplicateRequest = await leave_requests.findOne({
-        where: {
-          employee_id,
-          from_date,
-          to_date,
-        },
-      });
-  
-      if (duplicateRequest) {
-        return res.status(200).json({
-          success: false,
-          message: "Duplicate leave request found.",
+        // Validate required fields
+        if (!employee_id || !from_date || !to_date || !leave_type_id || 
+            !from_date_leave_duration || !to_date_leave_duration) {
+            return res.status(400).json({ message: 'Missing required fields.' });
+        }
+
+        const leaveType = await leave_type.findByPk(leave_type_id);
+        if (!leaveType) {
+            return res.status(404).json({ message: 'Leave type not found' });
+        }
+
+        // Parse dates and validate
+        const startDate = new Date(from_date);
+        const endDate = new Date(to_date);
+        
+        if (startDate > endDate) {
+            return res.status(400).json({ message: 'End date cannot be before start date.' });
+        }
+
+        // Check for existing leave within the date range
+        const existingLeave = await leave_requests.findOne({
+          where: {
+              employee_id,
+              status: 'Approved',
+              [Op.or]: [
+                  {
+                      from_date: {
+                          [Op.between]: [from_date, to_date]
+                      }
+                  },
+                  {
+                      to_date: {
+                          [Op.between]: [from_date, to_date]
+                      }
+                  },
+                  {
+                      [Op.and]: [
+                          { from_date: { [Op.lte]: from_date } },
+                          { to_date: { [Op.gte]: to_date } }
+                      ]
+                  }
+              ]
+          }
         });
-      }
-  
-      // Format dates
-      const formattedFromDate = moment(from_date).format('YYYY-MM-DD');
-      const formattedToDate = moment(to_date).format('YYYY-MM-DD');
-  
-      console.log("from_date:", from_date, "to_date:", to_date);
-  
-      const currentDate = new Date();
-      const reqCurrentDate = currentDate.toLocaleDateString('en-CA');
-  
-      // Calculate the number of leave days
-      const leaveDays = Math.floor((new Date(to_date) - new Date(from_date)) / (1000 * 60 * 60 * 24)) + 1;
-  
-      // Fetch the assigned leave record for the employee and leave type
-      const assignedLeave = await assigned_leave.findOne({
-        where: {
-          employee_id,
-          leave_type_id,
-        },
-      });
-  
-      if (!assignedLeave) {
-        return res.status(404).json({ message: 'Leave balance not found for this employee and leave type' });
-      }
-  
-      // Check if the employee has sufficient leave balance
-      if (assignedLeave.max_leaves < leaveDays) {
-        return res.status(400).json({ message: `Insufficient leave balance. You have only ${assignedLeave.max_leaves} days left for ${leaveType.leave_type_name}.` });
-      }
-  
-      // Create the leave request
-      const leave = await leave_requests.create({
-        employee_id: parseInt(employee_id, 10),
-        from_date: formattedFromDate,
-        to_date: formattedToDate,
-        leave_type_id,
-        reason,
-        status: "Approved",
-        added_by_admin: true,
-        request_date: reqCurrentDate,
-        emp_email: emp_email,
-      });
-  
-      console.log("admin create leave::", leave);
-  
-      // Update the remaining leave balance in the assigned_leave table
-      assignedLeave.max_leaves -= leaveDays;
-      await assignedLeave.save();
-  
-      // Add leave to login logs
-      const leaveDates = [];
-      let date = new Date(from_date);
-      const endDate = new Date(to_date);
-  
-      // Generate all leave dates
-      while (date <= endDate) {
-        leaveDates.push(new Date(date));
-        date.setDate(date.getDate() + 1);
-      }
-  
-      // Bulk update login logs
-      const logPromises = leaveDates.map((date) =>
-        LoginLogs.upsert({
-          date: date.toISOString().split("T")[0],
-          employeecode: employee_id,
-          on_leave: 1,
-        })
-      );
-  
-      console.log("logPromises::", logPromises);
-  
-      await Promise.all(logPromises);
-  
-      res.status(201).json({ success: true, message: "Leave created successfully.", leave });
+
+        console.log("existing leave::", existingLeave)
+
+        if (existingLeave) {
+          return res.status(409).json({ message: 'Leave already approved for the selected date range.' });
+        }
+
+        // Calculate leave days
+        const leaveDaysDetails = calculateLeaveDays(
+            startDate, 
+            endDate, 
+            from_date_leave_duration, 
+            to_date_leave_duration
+        );
+        
+        if (leaveDaysDetails.totalLeaveDays === 0) {
+            return res.status(400).json({ message: 'Invalid leave duration calculation.' });
+        }
+
+        // Check leave balance
+        const assignedLeave = await assigned_leave.findOne({
+            where: { employee_id, leave_type_id },
+        });
+
+        if (!assignedLeave) {
+            return res.status(404).json({ message: 'Leave balance not found.' });
+        }
+
+        if (assignedLeave.max_leaves < leaveDaysDetails.totalLeaveDays) {
+            return res.status(400).json({ 
+                message: `Insufficient leave balance. You have only ${assignedLeave.max_leaves} days left.` 
+            });
+        }
+
+        // Create leave request
+        const currentDate = new Date();
+        const leaveRequest = await leave_requests.create({
+            employee_id,
+            from_date: moment(startDate).format('YYYY-MM-DD'),
+            to_date: moment(endDate).format('YYYY-MM-DD'),
+            leave_type_id,
+            leave_type_name: leaveType.leave_type_name,
+            reason,
+            from_date_leave_duration,
+            to_date_leave_duration,
+            leave_days: leaveDaysDetails.totalLeaveDays,
+            half_day_type: null,
+            status: 'Approved',
+            added_by_admin: true,
+            request_date: currentDate.toLocaleDateString('en-CA'),
+            emp_email,
+        }, { transaction });
+
+        // Deduct leave balance
+        assignedLeave.max_leaves -= leaveDaysDetails.totalLeaveDays;
+        await assignedLeave.save({ transaction });
+
+        // Update login logs
+        const logPromises = leaveDaysDetails.days.map(day => 
+            LoginLogs.upsert({
+                date: day.date,
+                employeecode: employee_id,
+                on_leave: day.on_leave_value,
+            }, { transaction })
+        );
+
+        await Promise.all(logPromises);
+        await transaction.commit(); 
+
+        return res.status(201).json({
+            success: true,
+            message: 'Leave created successfully.',
+            data: leaveRequest,
+        });
     } catch (error) {
-      if (error.name === 'SequelizeValidationError') {
-        console.error("Validation Errors:", error.errors.map(e => e.message));
-        return res.status(400).json({
-          success: false,
-          error: error.errors.map(e => e.message), // Specific validation errors
-        });
-      } else {
-        console.error("Database Error:", error.message);
-        return res.status(500).json({ success: false, error: error.message });
-      }
+        await transaction.rollback(); 
+        console.error('Error creating leave:', error);
+        return res.status(500).json({ message: 'Failed to create leave.' });
     }
   };
+
+  // Helper function to calculate leave days and generate day details
+  function calculateLeaveDays(startDate, endDate, fromDuration, toDuration) {
+    const days = [];
+    let totalLeaveDays = 0;
+    let totalWorkingDays = 0;
+    let current = new Date(startDate);
+
+    // Determine if it's a multi-day leave
+    const isMultiDay = startDate.toDateString() !== endDate.toDateString();
+
+    while (current <= endDate) {
+        const dayOfWeek = current.getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6; // 0=Sunday, 6=Saturday
+        
+        if (!isWeekend) {
+            totalWorkingDays++;
+            
+            let dayLeaveValue = 0;
+            let onLeaveValue = 0;
+            
+            if (isMultiDay) {
+                if (current.toDateString() === startDate.toDateString()) {
+                    // Start day - use fromDuration
+                    dayLeaveValue = getDayValue(fromDuration);
+                    onLeaveValue = fromDuration === '1' ? 1 : 
+                                  (fromDuration === 'first_half' ? 2 : 
+                                  (fromDuration === 'second_half' ? 3 : 
+                                  (fromDuration === '0.25' ? 4 : 5)));
+                } 
+                else if (current.toDateString() === endDate.toDateString()) {
+                    // End day - use toDuration
+                    dayLeaveValue = getDayValue(toDuration);
+                    onLeaveValue = toDuration === '1' ? 1 : 
+                                  (toDuration === 'first_half' ? 2 : 
+                                  (toDuration === 'second_half' ? 3 : 
+                                  (toDuration === '0.25' ? 4 : 5)));
+                } 
+                else {
+                    // Middle day - full day
+                    dayLeaveValue = 1;
+                    onLeaveValue = 1;
+                }
+            } 
+            else {
+                // Single day leave - use fromDuration (should match toDuration)
+                dayLeaveValue = getDayValue(fromDuration);
+                onLeaveValue = fromDuration === '1' ? 1 : 
+                              (fromDuration === 'first_half' ? 2 : 
+                              (fromDuration === 'second_half' ? 3 : 
+                              (fromDuration === '0.25' ? 4 : 5)));
+            }
+            
+            days.push({
+                date: current.toISOString().split('T')[0],
+                on_leave_value: onLeaveValue,
+                dayLeaveValue
+            });
+            
+            totalLeaveDays += dayLeaveValue;
+        }
+        
+        current.setDate(current.getDate() + 1);
+    }
+    
+    return {
+        days,
+        totalLeaveDays,
+        totalWorkingDays
+    };
+}
+
+  // Helper function to get day value based on duration
+  function getDayValue(duration) {
+      switch (duration) {
+          case '1': return 1;
+          case 'first_half': return 0.5;
+          case 'second_half': return 0.5;
+          case '0.25': return 0.25;
+          case '0.75': return 0.75;
+          default: return 0;
+      }
+  }
   
 // Fetch all leave requests (optional: with filters)
   exports.getRequestedLeave = async (req, res) => {
@@ -491,53 +693,39 @@ const { where, Op, fn, col } = require('sequelize');
     }
   };
   
-  // Delete leave request if not approved
 // Delete leave request if not approved
-  exports.deleteRequestedLeave = async (req, res) => {
-    const { id } = req.params;
+exports.deleteRequestedLeave = async (req, res) => {
+  const { id } = req.params;
 
-    try {
-      const leave = await leave_requests.findByPk(id);
+  try {
+    const leave = await leave_requests.findByPk(id);
 
-      if (!leave) {
-        return res.status(404).json({ success: false, message: "Leave request not found." });
-      }
-
-      // If the leave request was approved, restore the leave balance
-      if (leave.status === "Approved") {
-        // Calculate the number of leave days
-        const leaveDays = Math.floor(
-          (new Date(leave.to_date) - new Date(leave.from_date)) / (1000 * 60 * 60 * 24)
-        ) + 1;
-
-        // Fetch the assigned leave record for the employee and leave type
-        const assignedLeave = await assigned_leave.findOne({
-          where: {
-            employee_id: leave.employee_id,
-            leave_type_id: leave.leave_type_id,
-          },
-        });
-
-        if (!assignedLeave) {
-          return res.status(404).json({ message: 'Assigned leave record not found.' });
-        }
-
-        // Restore the leave balance
-        assignedLeave.max_leaves += leaveDays;
-        await assignedLeave.save();
-      }
-
-      // Delete the leave request
-      await leave.destroy();
-
-      res.status(200).json({
-        success: true,
-        message: "Leave request deleted successfully.",
-      });
-    } catch (error) {
-      res.status(500).json({ success: false, error: error.message });
+    if (!leave) {
+      return res.status(404).json({ success: false, message: "Leave request not found." });
     }
-  };
+
+    if (leave.status !== "Pending") {
+      return res.status(403).json({
+        success: false,
+        message: "Only pending leave requests can be deleted."
+      });
+    }
+
+    // Proceed to delete
+    await leave.destroy();
+
+    return res.status(200).json({
+      success: true,
+      message: "Pending leave request deleted successfully."
+    });
+
+  } catch (error) {
+    console.error("Error deleting leave request:", error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
   
 //To fetch leave types and remaining leave balance
 exports.getLeaveTypesAndBalance = async (req, res) => {
@@ -649,3 +837,59 @@ exports.getLeaveTypes = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+
+exports.accrueMonthlyLeavesForAllEmployees = async (req, res) => {
+  try {
+    const employees = await Employees.findAll();
+    const currentMonth = moment().month(); // 0 = January, 11 = December
+
+    for (const emp of employees) {
+      const assignedLeaves = await assigned_leave.findAll({
+        where: { employee_id: emp.id }
+      });
+
+      for (const leave of assignedLeaves) {
+        let monthlyAccrual = 0;
+        const leaveTypeId = leave.leave_type_id;
+
+        switch (leaveTypeId) {
+          case 2: // Casual Leave - 6/year, no carry forward
+            if (currentMonth === 0) {
+              leave.max_leaves = 0; // Reset in January
+            }
+            monthlyAccrual = 6 / 12;
+            break;
+
+          case 1: // Sick Leave - 10/year, carry forward
+            monthlyAccrual = 10 / 12;
+            break;
+
+          case 3: // Paid Leave - 20/year, carry forward
+            monthlyAccrual = 20 / 12;
+            break;
+
+          default:
+            continue;
+        }
+
+        // Accrue monthly leaves
+        leave.max_leaves = parseFloat((parseFloat(leave.max_leaves) + monthlyAccrual).toFixed(2));
+        await leave.save();
+      }
+
+      console.log(`Leaves updated for employee: ${emp.id}`);
+    }
+
+    if (res) {
+      res.status(200).json({ message: 'Leave accrual completed.' });
+    }
+  } catch (error) {
+    console.error('Error in leave accrual:', error);
+    if (res) {
+      res.status(500).json({ error: 'Error in leave accrual.' });
+    }
+  }
+};
+
+

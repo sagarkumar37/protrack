@@ -35,7 +35,9 @@ const Projects = sequelize2.define('projects', {
       //   model: 'employees',
       //   key: 'id'
       // },
-    }
+    },
+    non_billable_type: { type: DataTypes.STRING(20), allowNull: true },   // Internal / External
+    customer_code: { type: DataTypes.STRING(20), allowNull: true }
   }, {
     tableName: 'projects',
     timestamps: false
